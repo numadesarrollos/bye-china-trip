@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestro viaje a China · Diseño completo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FCF7F2; --surface:#FFFFFF; --surface-warm:#FFFBF6;
+    --ink:#2B2521; --ink-soft:#7A6E64;
+    --cinnabar:#C9402E; --cinnabar-deep:#A8301F;
+    --amber:#B07A43; --amber-soft:#F3E6D5;
+    --blush:#D5808F; --blush-soft:#F7E5E8;
+    --gold:#C2A05A; --line:#EBE0D4;
+    --display:'Fraunces',Georgia,serif; --body:'Inter',system-ui,sans-serif; --script:'Caveat',cursive;
+    --r:18px;
+  }
+  /* Modo oscuro: tinta china sobre papel envejecido */
+  .dark{
+    --paper:#1B1714; --surface:#241F1B; --surface-warm:#2A2420;
+    --ink:#F3E9DD; --ink-soft:#B3A597;
+    --cinnabar:#E5654F; --cinnabar-deep:#C9402E;
+    --amber:#D2A164; --amber-soft:#3A2E20;
+    --blush:#E59CA8; --blush-soft:#3A2A2D;
+    --gold:#D8B872; --line:#3A322B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:#EDE2D5;
+    -webkit-font-smoothing:antialiased;padding:48px 20px 80px;line-height:1.5}
+  .board{max-width:1240px;margin:0 auto}
+
+  /* Concept header */
+  .intro{max-width:760px;margin:0 auto 14px}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cinnabar);
+    font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--cinnabar)}
+  .intro h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,5vw,44px);line-height:1.05}
+  .intro h1 .amp{color:var(--cinnabar);font-style:italic}
+  .intro .sub{font-family:var(--script);font-size:24px;color:var(--amber);margin-top:6px}
+  .intro p{color:var(--ink-soft);font-size:15px;margin-top:14px;max-width:66ch}
+  .thread-note{margin-top:18px;padding:14px 16px;border-radius:14px;background:var(--surface-warm);
+    border:1px solid var(--line);font-size:13.5px;color:var(--ink-soft);display:flex;gap:12px;align-items:flex-start}
+  .thread-note b{color:var(--ink)}
+  .knot{flex:none;width:30px;height:30px;border-radius:50%;background:var(--cinnabar);
+    display:grid;place-items:center;color:#fff;font-size:14px;margin-top:1px}
+
+  /* Token legend */
+  .tokens{display:flex;flex-wrap:wrap;gap:26px;max-width:760px;margin:24px auto 10px;
+    padding-top:22px;border-top:1px solid #d9cbbc}
+  .tok h4{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:10px}
+  .swatches{display:flex;gap:8px}
+  .sw{width:30px;height:30px;border-radius:8px;border:1px solid rgba(0,0,0,.06)}
+  .type-demo span{display:block}
+  .type-demo .d{font-family:var(--display);font-size:22px;font-weight:600}
+  .type-demo .b{font-family:var(--body);font-size:14px;color:var(--ink-soft)}
+  .type-demo .s{font-family:var(--script);font-size:20px;color:var(--blush)}
+
+  /* Group titles */
+  .group-t{font-family:var(--display);font-size:20px;color:var(--ink);font-weight:600;
+    max-width:1160px;margin:38px auto 4px;padding-top:24px;border-top:1px solid #d9cbbc}
+  .group-t small{display:block;font-family:var(--body);font-size:13px;color:var(--ink-soft);font-weight:400;margin-top:2px}
+
+  /* Phone grid */
+  .screens{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,360px));
+    gap:38px 30px;justify-content:center;margin-top:18px}
+  .frame-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .frame-label{font-size:13px;color:var(--ink-soft);font-weight:500;text-align:center;max-width:340px}
+  .frame-label b{color:var(--ink);font-weight:600}
+  .phone{width:360px;height:740px;border-radius:42px;background:#1c1714;padding:11px;
+    box-shadow:0 30px 60px -28px rgba(60,30,20,.55),0 8px 22px -12px rgba(60,30,20,.4);position:relative;flex:none}
+  .screen{width:100%;height:100%;border-radius:32px;overflow:hidden;background:var(--paper);
+    display:flex;flex-direction:column;position:relative;color:var(--ink)}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:24px;
+    background:#1c1714;border-radius:0 0 16px 16px;z-index:5}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;
+    font-size:12px;font-weight:600;color:var(--ink)}
+  .app{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .content{flex:1;overflow:hidden;padding:6px 18px 14px}
+
+  /* App header */
+  .ahead{padding:8px 2px 14px}
+  .ahead .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cinnabar);font-weight:600}
+  .ahead h2{font-family:var(--display);font-size:27px;font-weight:600;letter-spacing:-.01em;margin-top:3px}
+  .ahead .couple{font-family:var(--script);font-size:21px;color:var(--amber);margin-top:1px}
+
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+    padding:3px 9px 3px 6px;border-radius:999px}
+  .chip.bear{background:var(--amber-soft);color:var(--amber)}
+  .chip.bun{background:var(--blush-soft);color:var(--blush)}
+
+  /* Cards */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:15px 16px;box-shadow:0 8px 18px -16px rgba(80,40,20,.5)}
+  .card + .card{margin-top:12px}
+  .section-t{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);
+    font-weight:600;margin:20px 2px 11px}
+
+  .hero{background:linear-gradient(135deg,#C9402E,#A8301F);color:#fff;border:none;border-radius:22px;
+    padding:18px;position:relative;overflow:hidden}
+  .hero::after{content:"🏮";position:absolute;right:-6px;bottom:-12px;font-size:78px;opacity:.16}
+  .hero .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:600}
+  .hero h3{font-family:var(--display);font-size:22px;font-weight:600;margin:5px 0 8px}
+  .hero p{font-size:13px;opacity:.92;max-width:24ch}
+  .counter{display:flex;gap:14px;margin-top:13px;padding-top:13px;border-top:1px solid rgba(255,255,255,.22)}
+  .counter div{font-size:11px;opacity:.85}
+  .counter b{display:block;font-family:var(--display);font-size:18px;opacity:1;font-weight:600}
+
+  .mini{display:flex;align-items:center;gap:13px}
+  .mini .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+    background:var(--amber-soft);color:var(--amber);flex:none}
+  .mini .ic svg{width:22px;height:22px}
+  .mini .body{flex:1;min-width:0}
+  .mini .body .t{font-weight:600;font-size:14.5px}
+  .mini .body .m{font-size:12.5px;color:var(--ink-soft)}
+  .mini .go{font-size:12px;font-weight:600;color:var(--cinnabar);white-space:nowrap}
+
+  .btn{display:block;width:100%;text-align:center;margin-top:14px;padding:12px;border-radius:13px;
+    background:var(--ink);color:var(--paper);font-weight:600;font-size:14px;border:none;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--cinnabar);border:1.5px solid var(--cinnabar)}
+
+  .act{display:flex;gap:11px;align-items:flex-start;padding:9px 2px}
+  .act + .act{border-top:1px solid var(--line)}
+  .act .time{font-size:12px;font-weight:600;color:var(--cinnabar);width:42px;flex:none;padding-top:1px}
+  .act .at{font-size:14px;font-weight:500;line-height:1.35}
+  .act .am{font-size:12px;color:var(--ink-soft)}
+
+  .doc{display:flex;align-items:center;gap:12px;padding:11px 0}
+  .doc + .doc{border-top:1px solid var(--line)}
+  .doc .dic{width:38px;height:46px;border-radius:7px;background:var(--blush-soft);color:var(--blush);
+    display:grid;place-items:center;font-size:10px;font-weight:700;flex:none;border:1px solid rgba(213,128,143,.35)}
+  .doc .dt{font-weight:500;font-size:14px}
+  .doc .dm{font-size:12px;color:var(--ink-soft)}
+
+  /* Bottom nav */
+  .nav{display:flex;justify-content:space-around;align-items:center;padding:10px 8px 16px;
+    background:var(--surface-warm);border-top:1px solid var(--line)}
+  .nav a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;
+    color:var(--ink-soft);text-decoration:none;font-weight:500}
+  .nav a svg{width:23px;height:23px;stroke:var(--ink-soft);fill:none;stroke-width:1.7}
+  .nav a.on{color:var(--cinnabar)}
+  .nav a.on svg{stroke:var(--cinnabar)}
+
+  /* Itinerario agrupado por ciudad (colapsable) */
+  .thread{position:relative;padding-left:30px}
+  .thread::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;
+    background:var(--cinnabar);border-radius:2px}
+  .citygroup{position:relative;margin-bottom:12px}
+  .citygroup::before{content:"";position:absolute;left:-26px;top:16px;width:14px;height:14px;
+    border-radius:50%;background:var(--cinnabar);border:2.5px solid var(--paper);z-index:2;
+    box-shadow:0 0 0 2px var(--cinnabar)}
+  .cityhead{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);
+    border-radius:14px;padding:12px 14px;box-shadow:0 6px 14px -14px rgba(80,40,20,.5);cursor:pointer}
+  .cityhead .cn{font-family:var(--display);font-size:17px;font-weight:600;flex:1}
+  .cityhead .cn small{display:block;font-family:var(--body);font-size:11.5px;color:var(--ink-soft);font-weight:500;margin-top:1px}
+  .cityhead .badge{font-size:11px;font-weight:600;color:var(--cinnabar);background:var(--blush-soft);
+    padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .cityhead .chev{color:var(--ink-soft);font-size:13px;transition:transform .2s}
+  .citygroup.open .chev{transform:rotate(180deg)}
+  .citydays{padding:10px 0 2px 4px;display:none}
+  .citygroup.open .citydays{display:block}
+  .citygroup.open .cityhead{border-color:var(--cinnabar);border-bottom-left-radius:4px;border-bottom-right-radius:4px}
+  .daymini{display:flex;gap:10px;align-items:center;padding:9px 6px 9px 2px;border-radius:9px;cursor:pointer}
+  .daymini + .daymini{border-top:1px solid var(--line)}
+  .daymini:hover,.daymini:active{background:var(--surface-warm)}
+  .daymini .dd{font-size:11px;font-weight:600;color:var(--cinnabar);width:46px;flex:none}
+  .daymini .dt{font-size:13.5px;font-weight:500;line-height:1.3;flex:1}
+  .daymini .arr{color:var(--ink-soft);font-size:14px;flex:none}
+  .daymini.special .dt{color:var(--gold)}
+
+  /* Day header */
+  .dayhead{margin:-6px -18px 12px;padding:18px 18px 16px;color:#fff;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,var(--cinnabar),var(--cinnabar-deep))}
+  .dayhead.special{background:linear-gradient(135deg,#C9A84E,#A8842E)}
+  .dayhead .dk{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.9;font-weight:600}
+  .dayhead h2{font-family:var(--display);font-size:25px;font-weight:600;line-height:1.05;margin-top:3px}
+  .dayhead .dm{font-size:12.5px;opacity:.92;margin-top:4px}
+  .dayhead::after{content:"🏮";position:absolute;right:-4px;bottom:-14px;font-size:74px;opacity:.16}
+  .dayhead.special::after{content:"♥"}
+
+  /* Place header */
+  .placehead{height:150px;border-radius:0;margin:-6px -18px 14px;position:relative;
+    background:linear-gradient(135deg,#B07A43,#8a5a2c);display:flex;align-items:flex-end;padding:16px;color:#fff;overflow:hidden}
+  .placehead::after{content:"⛩️";position:absolute;right:6px;top:0px;font-size:96px;opacity:.18}
+  .placehead .pk{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.9;font-weight:600}
+  .placehead h2{font-family:var(--display);font-size:30px;font-weight:600;line-height:1}
+  .placehead .pm{font-size:12.5px;opacity:.9;margin-top:3px}
+
+  /* Flight / train route */
+  .route{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
+  .route .ap{text-align:center}
+  .route .ap .code{font-family:var(--display);font-size:24px;font-weight:600}
+  .route .ap .city{font-size:11px;color:var(--ink-soft)}
+  .route .mid{flex:1;position:relative;height:2px;background:var(--line)}
+  .route .mid.plane::before{content:"✈"}
+  .route .mid.train::before{content:"🚄"}
+  .route .mid::before{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:var(--paper);padding:0 6px;color:var(--cinnabar);font-size:14px}
+  .data-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-top:1px solid var(--line)}
+  .data-row span:first-child{color:var(--ink-soft)}
+  .data-row span:last-child{font-weight:600}
+
+  /* PDF viewer */
+  .viewer{flex:1;background:#2B2521;display:flex;align-items:center;justify-content:center;margin:-6px -18px 0;position:relative}
+  .page{width:74%;aspect-ratio:1/1.41;background:#fff;border-radius:4px;box-shadow:0 10px 30px rgba(0,0,0,.4);
+    padding:20px;font-size:9px;color:#333;overflow:hidden}
+  .page .ph{height:9px;background:#e4ddd3;border-radius:2px;margin-bottom:7px}
+  .page .ph.s{width:55%} .page .ph.m{width:80%}
+  .vtools{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;
+    background:rgba(0,0,0,.5);padding:8px 12px;border-radius:30px;backdrop-filter:blur(6px)}
+  .vtools button{background:none;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;opacity:.9}
+
+  /* Filtros por categoría */
+  .filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;margin:0 -2px 2px;scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .fil{flex:none;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+    padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);
+    color:var(--ink-soft);white-space:nowrap;cursor:pointer}
+  .fil.on{background:var(--cinnabar);border-color:var(--cinnabar);color:#fff}
+
+  /* Budget bar */
+  .bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:8px;display:flex}
+  .bar i{height:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:11.5px;color:var(--ink-soft)}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:3px;flex:none}
+
+  /* Converter */
+  .conv{display:flex;align-items:center;gap:10px;margin-top:6px}
+  .conv .f{flex:1;background:var(--surface-warm);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .conv .f .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+  .conv .f .val{font-family:var(--display);font-size:22px;font-weight:600;margin-top:2px}
+  .conv .swap{width:34px;height:34px;border-radius:50%;background:var(--cinnabar);color:#fff;flex:none;
+    display:grid;place-items:center;font-size:15px}
+
+  /* Checklist */
+  .check{display:flex;align-items:center;gap:11px;padding:10px 2px}
+  .check + .check{border-top:1px solid var(--line)}
+  .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+  .box.done{background:var(--cinnabar);border-color:var(--cinnabar);color:#fff;font-size:12px}
+  .check .ct{font-size:14px;font-weight:500}
+  .check.is-done .ct{color:var(--ink-soft);text-decoration:line-through}
+
+  /* Diary gallery */
+  .gallery{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .ph-img{aspect-ratio:1/1;border-radius:12px;background:linear-gradient(135deg,var(--amber),var(--blush));
+    display:grid;place-items:center;font-size:26px;color:rgba(255,255,255,.7)}
+  .diary-note{font-family:var(--script);font-size:18px;color:var(--ink);line-height:1.35;margin-top:10px}
+
+  /* More hub */
+  .hub{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 14px;
+    box-shadow:0 8px 18px -16px rgba(80,40,20,.5)}
+  .tile .te{font-size:24px}
+  .tile .tt{font-weight:600;font-size:14px;margin-top:8px}
+  .tile .tm{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+
+  /* Login */
+  .login{flex:1;display:flex;flex-direction:column;justify-content:center;padding:30px 26px;text-align:center}
+  .knot-big{width:64px;height:64px;border-radius:50%;background:var(--cinnabar);color:#fff;
+    display:grid;place-items:center;font-size:26px;margin:0 auto 18px}
+  .login h2{font-family:var(--display);font-size:26px;font-weight:600}
+  .login .couple{font-family:var(--script);font-size:20px;color:var(--amber);margin-top:2px}
+  .field{text-align:left;margin-top:16px}
+  .field label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+  .field .inp{margin-top:5px;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:12px 14px;font-size:14px;color:var(--ink-soft)}
+
+  /* Sync */
+  .sync-state{display:flex;align-items:center;gap:12px}
+  .sync-state .ring{width:44px;height:44px;border-radius:50%;border:3px solid var(--line);
+    border-top-color:var(--cinnabar);flex:none}
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px}
+  .pill.ok{background:#E3F0E4;color:#3C7A45} .pill.pend{background:var(--amber-soft);color:var(--amber)}
+  .dark .pill.ok{background:#26331f;color:#9fce9f}
+
+  .footnote{max-width:760px;margin:46px auto 0;font-size:13px;color:var(--ink-soft);
+    border-top:1px solid #d9cbbc;padding-top:20px}
+  .footnote b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="board">
+
+  <!-- ===================== CONCEPTO ===================== -->
+  <div class="intro">
+    <div class="eyebrow">Sistema de diseño · App del viaje</div>
+    <h1>Nuestro viaje <span class="amp">&amp;</span> a China</h1>
+    <div class="sub">Borja 🐻 &amp; Esther 🐰 · desde el 29·05·2007</div>
+    <p>Una guía de viaje que también es un pequeño regalo. Material 3, cálida y vuestra: cada día, lugar y plan lleva la marca de quién lo añadió. Documento único de diseño con todas las pantallas (claro y oscuro).</p>
+    <div class="thread-note">
+      <span class="knot">结</span>
+      <div><b>El hilo rojo del destino (红线).</b> La leyenda china dice que dos personas destinadas a encontrarse están unidas por un hilo rojo invisible. En la app es la columna del itinerario: une cada día del viaje, con 🐻 y 🐰 a lo largo del camino.</div>
+    </div>
+  </div>
+
+  <div class="tokens">
+    <div class="tok">
+      <h4>Color</h4>
+      <div class="swatches">
+        <div class="sw" style="background:#C9402E" title="Hilo rojo / cinabrio"></div>
+        <div class="sw" style="background:#B07A43" title="🐻 Borja · ámbar"></div>
+        <div class="sw" style="background:#D5808F" title="🐰 Esther · rosa"></div>
+        <div class="sw" style="background:#C2A05A" title="Fechas especiales · oro"></div>
+        <div class="sw" style="background:#FCF7F2" title="Papel de arroz"></div>
+        <div class="sw" style="background:#2B2521" title="Tinta"></div>
+      </div>
+    </div>
+    <div class="tok">
+      <h4>Tipografía</h4>
+      <div class="type-demo">
+        <span class="d">Fraunces — títulos</span>
+        <span class="b">Inter — texto e interfaz</span>
+        <span class="s">Caveat — toques personales</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CADA DÍA ===================== -->
+  <div class="group-t">Cada día<small>Hoy, itinerario por ciudad y detalle de día</small></div>
+  <div class="screens">
+
+    <!-- HOY -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Hoy · jue 28 may</div><h2>Hola, 🐻 y 🐰</h2><div class="couple">vuestro 4.º día juntos en China</div></div>
+          <div class="hero">
+            <div class="lbl">Pekín</div><h3>Ciudad Prohibida y hutongs</h3>
+            <p>Un día tranquilo antes del aniversario de mañana.</p>
+            <div class="counter">
+              <div><b>19</b>años juntos</div><div><b>6.960</b>días</div><div><b>14</b>días de viaje</div>
+            </div>
+          </div>
+          <div class="section-t">Próximo</div>
+          <div class="card mini">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/><circle cx="9" cy="14" r="1" fill="currentColor"/><circle cx="15" cy="14" r="1" fill="currentColor"/></svg></div>
+            <div class="body"><div class="t">Tren a Xi'an</div><div class="m">Mañana · 14:32 · coche 6, 7A·7B</div></div>
+            <div class="go">Ver billete ›</div>
+          </div>
+          <div class="section-t">Plan de hoy</div>
+          <div class="card" style="padding:6px 14px">
+            <div class="act"><div class="time">09:30</div><div><div class="at">Ciudad Prohibida</div><div class="am"><span class="chip bear">🐻 Borja</span></div></div></div>
+            <div class="act"><div class="time">13:00</div><div><div class="at">Comida en hutong de Nanluoguxiang</div><div class="am"><span class="chip bun">🐰 Esther</span></div></div></div>
+            <div class="act"><div class="time">18:00</div><div><div class="at">Atardecer en el parque Jingshan</div><div class="am"><span class="chip bear">🐻</span> <span class="chip bun">🐰</span> juntos</div></div></div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Hoy</b> — lo del día y el contador de vuestros días</div>
+    </div>
+
+    <!-- ITINERARIO POR CIUDAD -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · UTC+8</span></div>
+        <div class="app"><div class="content" style="overflow-y:auto">
+          <div class="ahead"><div class="kicker">26 may – 8 jun · 14 días · 4 ciudades</div><h2>Itinerario</h2></div>
+          <div class="thread">
+            <div class="citygroup">
+              <div class="cityhead" onclick="this.parentElement.classList.toggle('open')">
+                <div class="cn">Pekín 北京 <small>Días 1–4 · 26–29 may</small></div>
+                <span class="badge">4 días</span><span class="chev">▼</span>
+              </div>
+              <div class="citydays">
+                <div class="daymini"><div class="dd">Día 1</div><div class="dt">Llegada y Templo del Cielo</div><span class="arr">›</span></div>
+                <div class="daymini"><div class="dd">Día 2</div><div class="dt">Plaza Tiananmén y Gran Salón</div><span class="arr">›</span></div>
+                <div class="daymini"><div class="dd">Día 3</div><div class="dt">Ciudad Prohibida y hutongs</div><span class="arr">›</span></div>
+                <div class="daymini special"><div class="dd">Día 4</div><div class="dt">♥ Mutianyu — 19.º aniversario</div><span class="arr">›</span></div>
+              </div>
+            </div>
+            <div class="citygroup open">
+              <div class="cityhead" onclick="this.parentElement.classList.toggle('open')">
+                <div class="cn">Xi'an 西安 <small>Días 5–6 · 30–31 may</small></div>
+                <span class="badge">2 días</span><span class="chev">▼</span>
+              </div>
+              <div class="citydays">
+                <div class="daymini"><div class="dd">Día 5</div><div class="dt">Guerreros de terracota</div><span class="arr">›</span></div>
+                <div class="daymini"><div class="dd">Día 6</div><div class="dt">Muralla antigua y barrio musulmán</div><span class="arr">›</span></div>
+              </div>
+            </div>
+            <div class="citygroup">
+              <div class="cityhead" onclick="this.parentElement.classList.toggle('open')">
+                <div class="cn">Shanghái 上海 <small>Días 7–11 · 2–6 jun</small></div>
+                <span class="badge">5 días</span><span class="chev">▼</span>
+              </div>
+              <div class="citydays">
+                <div class="daymini"><div class="dd">Día 7</div><div class="dt">El Bund y Pudong</div><span class="arr">›</span></div>
+                <div class="daymini"><div class="dd">Día 8</div><div class="dt">Jardín Yu y ciudad vieja</div><span class="arr">›</span></div>
+              </div>
+            </div>
+            <div class="citygroup">
+              <div class="cityhead" onclick="this.parentElement.classList.toggle('open')">
+                <div class="cn">Guilin 桂林 <small>Días 12–14 · 6–8 jun</small></div>
+                <span class="badge">3 días</span><span class="chev">▼</span>
+              </div>
+              <div class="citydays">
+                <div class="daymini"><div class="dd">Día 12</div><div class="dt">Crucero por el río Li</div><span class="arr">›</span></div>
+                <div class="daymini"><div class="dd">Día 14</div><div class="dt">Vuelta a casa ✈</div><span class="arr">›</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Itinerario por ciudad</b> — pliega cada ciudad para ver el viaje de un vistazo; toca un día para abrir su detalle</div>
+    </div>
+
+    <!-- DETALLE DE DÍA -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Mutianyu · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="dayhead special">
+            <div class="dk">Día 4 · Gran Muralla</div><h2>Mutianyu, solos al amanecer</h2>
+            <div class="dm">♥ 19.º aniversario · vie 29 may</div>
+          </div>
+          <div class="section-t">Plan del día</div>
+          <div class="card" style="padding:6px 14px">
+            <div class="act"><div class="time">05:30</div><div><div class="at">Salida hacia Mutianyu</div><div class="am"><span class="chip bear">🐻</span> <span class="chip bun">🐰</span> juntos</div></div></div>
+            <div class="act"><div class="time">07:00</div><div><div class="at">Amanecer en la muralla</div><div class="am">tramo menos turístico</div></div></div>
+            <div class="act"><div class="time">13:00</div><div><div class="at">Comida sorpresa 🎁</div><div class="am"><span class="chip bear">🐻 Borja</span></div></div></div>
+          </div>
+          <div class="section-t">Ubicaciones</div>
+          <div class="card" style="padding:6px 14px">
+            <div class="act"><div class="time">📍</div><div><div class="at">Mutianyu (慕田峪)</div><div class="am">teleférico secc. 14 · copiar dirección</div></div></div>
+          </div>
+          <button class="btn ghost">+ Añadir actividad o ubicación</button>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Detalle de día</b> — cabecera dorada cuando es fecha especial</div>
+    </div>
+
+  </div>
+
+  <!-- ===================== LUGARES Y TRANSPORTE ===================== -->
+  <div class="group-t">Lugares y transporte<small>Detalle de lugar, vuelos, trenes y visor de documentos offline</small></div>
+  <div class="screens">
+
+    <!-- DETALLE DE LUGAR -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="placehead"><div><div class="pk">Lugar · Día 1–4</div><h2>Pekín</h2><div class="pm">北京 · 26–29 mayo</div></div></div>
+          <div class="section-t">Documentos</div>
+          <div class="card" style="padding:4px 14px">
+            <div class="doc"><div class="dic">PDF</div><div><div class="dt">Reserva Hotel Hutong</div><div class="dm">Subido por 🐰 Esther</div></div></div>
+            <div class="doc"><div class="dic">PDF</div><div><div class="dt">Entradas Ciudad Prohibida</div><div class="dm">Subido por 🐻 Borja</div></div></div>
+            <div class="doc"><div class="dic">IMG</div><div><div class="dt">Mapa metro de Pekín</div><div class="dm">Disponible sin conexión</div></div></div>
+          </div>
+          <div class="section-t">Ubicaciones</div>
+          <div class="card" style="padding:6px 14px">
+            <div class="act"><div class="time">📍</div><div><div class="at">Ciudad Prohibida</div><div class="am">Dōngchéng · 09:30</div></div></div>
+            <div class="act"><div class="time">📍</div><div><div class="at">Parque Jingshan</div><div class="am">mejores vistas al atardecer</div></div></div>
+          </div>
+          <button class="btn ghost">+ Añadir documento o ubicación</button>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Detalle de lugar</b> — documentos y ubicaciones, con quién los añadió</div>
+    </div>
+
+    <!-- VUELO -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Madrid · UTC+2</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Vuelos</div><h2>Ida a Pekín</h2></div>
+          <div class="card">
+            <div class="route">
+              <div class="ap"><div class="code">MAD</div><div class="city">Madrid</div></div>
+              <div class="mid plane"></div>
+              <div class="ap"><div class="code">PEK</div><div class="city">Pekín</div></div>
+            </div>
+            <div class="data-row"><span>Salida</span><span>26 may · 11:55</span></div>
+            <div class="data-row"><span>Llegada</span><span>27 may · 05:30</span></div>
+            <div class="data-row"><span>Aerolínea</span><span>Air China · CA846</span></div>
+            <div class="data-row"><span>Asientos</span><span>🐻 32A · 🐰 32B</span></div>
+            <div class="data-row"><span>Precio (x2)</span><span>1.180 € · 9.150 ¥</span></div>
+            <button class="btn">Ver billetes</button>
+          </div>
+          <div class="section-t">A mano sin conexión</div>
+          <div class="card mini">
+            <div class="ic" style="background:var(--blush-soft);color:var(--blush)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l3 3v17H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>
+            <div class="body"><div class="t">Tarjetas de embarque</div><div class="m">Guardadas en el dispositivo</div></div>
+            <div class="go">Abrir ›</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Vuelos</b> — horario, precio y billete a mano, también offline</div>
+    </div>
+
+    <!-- TREN -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Trenes</div><h2>Pekín → Xi'an</h2></div>
+          <div class="card">
+            <div class="route">
+              <div class="ap"><div class="code">BJP</div><div class="city">Pekín Oeste</div></div>
+              <div class="mid train"></div>
+              <div class="ap"><div class="code">XYP</div><div class="city">Xi'an Norte</div></div>
+            </div>
+            <div class="data-row"><span>Salida</span><span>29 may · 14:32</span></div>
+            <div class="data-row"><span>Llegada</span><span>29 may · 19:05</span></div>
+            <div class="data-row"><span>Tren · clase</span><span>G87 · 1.ª</span></div>
+            <div class="data-row"><span>Coche · asientos</span><span>6 · 🐻 7A · 🐰 7B</span></div>
+            <div class="data-row"><span>Precio (x2)</span><span>104 € · 810 ¥</span></div>
+            <button class="btn">Ver billete (QR)</button>
+          </div>
+          <div class="section-t">Siguiente tren</div>
+          <div class="card mini">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg></div>
+            <div class="body"><div class="t">Xi'an → Shanghái</div><div class="m">2 jun · 09:12 · G1922</div></div>
+            <div class="go">Ver ›</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Trenes</b> — billete con QR a mano sin conexión</div>
+    </div>
+
+    <!-- VISOR DE DOCUMENTO -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Sin conexión ✈</span></div>
+        <div class="app">
+          <div class="ahead" style="padding:8px 18px 10px"><div class="kicker">Documento · 🐰 Esther</div><h2 style="font-size:20px">Reserva Hotel Hutong</h2></div>
+          <div class="viewer">
+            <div class="page">
+              <div class="ph s"></div><div class="ph m"></div><div class="ph"></div>
+              <div class="ph m"></div><div class="ph"></div><div class="ph s"></div>
+              <div style="height:10px"></div><div class="ph"></div><div class="ph m"></div>
+            </div>
+            <div class="vtools"><button>−</button><button>100%</button><button>+</button><button>⤓</button></div>
+          </div>
+        </div>
+        </div></div>
+      <div class="frame-label"><b>Visor de documento</b> — PDF/imagen a pantalla completa, 100% offline</div>
+    </div>
+
+  </div>
+
+  <!-- ===================== UTILIDADES ===================== -->
+  <div class="group-t">Utilidades de viaje<small>Gastos + conversor, preparativos, alojamientos, diario</small></div>
+  <div class="screens">
+
+    <!-- GASTOS + CONVERSOR -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Presupuesto</div><h2>Gastos del viaje</h2></div>
+          <div class="filters">
+            <span class="fil on">Todos</span><span class="fil">🚄 Transporte</span><span class="fil">🏨 Hoteles</span>
+            <span class="fil">🍜 Comida</span><span class="fil">🎟️ Entradas</span><span class="fil">🛍️ Compras</span>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:12px;color:var(--ink-soft);font-weight:600">Gastado · Todos</span>
+              <span style="font-family:var(--display);font-size:22px;font-weight:600">1.640 € <span style="font-size:13px;color:var(--ink-soft)">/ 3.000 €</span></span>
+            </div>
+            <div class="bar"><i style="width:30%;background:var(--cinnabar)"></i><i style="width:14%;background:var(--amber)"></i><i style="width:11%;background:var(--blush)"></i></div>
+            <div class="legend">
+              <span><span class="dot" style="background:var(--cinnabar)"></span>Transporte 1.284 €</span>
+              <span><span class="dot" style="background:var(--amber)"></span>Hoteles 420 €</span>
+              <span><span class="dot" style="background:var(--blush)"></span>Comida 336 €</span>
+            </div>
+          </div>
+          <div class="section-t">Conversor EUR ↔ CNY <span style="color:var(--ink-soft);font-weight:400;text-transform:none;letter-spacing:0">· tasa offline 7,75</span></div>
+          <div class="card">
+            <div class="conv">
+              <div class="f"><div class="lab">EUR</div><div class="val">100</div></div>
+              <div class="swap">⇄</div>
+              <div class="f"><div class="lab">CNY</div><div class="val">775</div></div>
+            </div>
+          </div>
+          <div class="section-t">Últimos gastos</div>
+          <div class="card" style="padding:6px 14px">
+            <div class="act"><div class="time">🚄</div><div><div class="at">Tren a Xi'an</div><div class="am"><span class="chip bear">🐻</span> · 104 €</div></div></div>
+            <div class="act"><div class="time">🍜</div><div><div class="at">Comida hutong</div><div class="am"><span class="chip bun">🐰</span> · 28 €</div></div></div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Gastos + Conversor</b> — filtros por categoría y cambio editable offline</div>
+    </div>
+
+    <!-- PREPARATIVOS + ALOJAMIENTOS -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Madrid · UTC+2</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Preparativos</div><h2>Antes de viajar</h2></div>
+          <div class="card" style="padding:4px 14px">
+            <div class="check is-done"><div class="box done">✓</div><div class="ct">Visado de turista (L)</div></div>
+            <div class="check is-done"><div class="box done">✓</div><div class="ct">eSIM China + VPN instalada</div></div>
+            <div class="check"><div class="box"></div><div class="ct">Seguro de viaje</div></div>
+            <div class="check"><div class="box"></div><div class="ct">Adaptador de enchufe</div></div>
+            <div class="check"><div class="box"></div><div class="ct">Yuanes en efectivo</div></div>
+          </div>
+          <div class="section-t">Alojamientos</div>
+          <div class="card mini">
+            <div class="ic" style="background:var(--blush-soft);color:var(--blush)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6"/></svg></div>
+            <div class="body"><div class="t">Hotel Hutong · Pekín</div><div class="m">26–29 may · loc. HX4821</div></div>
+            <div class="go">Ver ›</div>
+          </div>
+          <div class="card mini">
+            <div class="ic" style="background:var(--blush-soft);color:var(--blush)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6"/></svg></div>
+            <div class="body"><div class="t">Bund View · Shanghái</div><div class="m">2–6 jun · loc. SH9921</div></div>
+            <div class="go">Ver ›</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Preparativos + Alojamientos</b> — checklist y reservas con localizador</div>
+    </div>
+
+    <!-- DIARIO -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Xi'an · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Diario · sáb 30 may</div><h2>Guerreros de terracota</h2></div>
+          <div class="card">
+            <div class="gallery">
+              <div class="ph-img">🏯</div><div class="ph-img">📸</div><div class="ph-img">🍲</div><div class="ph-img">🌆</div>
+            </div>
+            <div class="diary-note">"Esther no paraba de hacer fotos a los guerreros. Hoy comimos los mejores fideos del viaje 🍜" — 🐻</div>
+            <div style="margin-top:10px"><span class="chip bear">🐻 Borja</span> <span class="chip bun">🐰 Esther</span></div>
+          </div>
+          <button class="btn ghost">+ Nueva entrada o foto</button>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Diario / galería</b> — recuerdos por día con la firma de los dos</div>
+    </div>
+
+  </div>
+
+  <!-- ===================== SISTEMA ===================== -->
+  <div class="group-t">Sistema<small>Hub "Más", login, estado de sync y modo oscuro</small></div>
+  <div class="screens">
+
+    <!-- MÁS -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Más</div><h2>Todo del viaje</h2></div>
+          <div class="hub">
+            <div class="tile"><div class="te">💰</div><div class="tt">Gastos</div><div class="tm">1.640 € · presupuesto</div></div>
+            <div class="tile"><div class="te">💱</div><div class="tt">Conversor</div><div class="tm">EUR ↔ CNY offline</div></div>
+            <div class="tile"><div class="te">🧳</div><div class="tt">Preparativos</div><div class="tm">2 de 5 pendientes</div></div>
+            <div class="tile"><div class="te">🏨</div><div class="tt">Alojamientos</div><div class="tm">2 reservas</div></div>
+            <div class="tile"><div class="te">🖼️</div><div class="tt">Diario</div><div class="tm">8 recuerdos</div></div>
+            <div class="tile"><div class="te">🗣️</div><div class="tt">Frases en chino</div><div class="tm">útiles offline</div></div>
+            <div class="tile"><div class="te">🆘</div><div class="tt">Emergencias</div><div class="tm">embajada · seguro</div></div>
+            <div class="tile"><div class="te">🔄</div><div class="tt">Sincronización</div><div class="tm">y copia de seguridad</div></div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Más</b> — hub de extras, incluidas frases en chino y emergencias</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span></span></div>
+        <div class="app">
+          <div class="login">
+            <div class="knot-big">结</div>
+            <h2>Nuestro viaje a China</h2>
+            <div class="couple">Borja 🐻 &amp; Esther 🐰</div>
+            <div class="field"><label>Correo</label><div class="inp">borja@ejemplo.com</div></div>
+            <div class="field"><label>Contraseña</label><div class="inp">••••••••</div></div>
+            <button class="btn">Entrar</button>
+            <p style="font-size:12px;color:var(--ink-soft);margin-top:14px">Los dos compartís el mismo viaje. Tus datos funcionan sin conexión; se sincronizan cuando hay red.</p>
+          </div>
+        </div>
+        </div></div>
+      <div class="frame-label"><b>Login</b> — Firebase Auth; el hilo rojo (结) como marca</div>
+    </div>
+
+    <!-- SYNC + BACKUP -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · VPN ON</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Sincronización</div><h2>Tus dos móviles</h2></div>
+          <div class="card sync-state">
+            <div class="ring"></div>
+            <div><div style="font-weight:600;font-size:14.5px">Sincronizando…</div>
+              <div style="font-size:12.5px;color:var(--ink-soft)">3 cambios subiendo · vía VPN</div></div>
+          </div>
+          <div class="section-t">Estado por dispositivo</div>
+          <div class="card" style="padding:6px 14px">
+            <div class="act"><div class="time">🐻</div><div><div class="at">Móvil de Borja</div><div class="am">Última sync: hace 2 min <span class="pill ok">al día</span></div></div></div>
+            <div class="act"><div class="time">🐰</div><div><div class="at">Móvil de Esther</div><div class="am">Pendiente: 3 docs <span class="pill pend">en cola</span></div></div></div>
+          </div>
+          <div class="section-t">Copia de seguridad (offline)</div>
+          <div class="card">
+            <div class="mini"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg></div>
+              <div class="body"><div class="t">Exportar a archivo</div><div class="m">JSON + documentos · sin nube</div></div>
+              <div class="go">Exportar ›</div></div>
+            <button class="btn ghost">Importar copia</button>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Sync + Backup</b> — estado por móvil y copia local independiente de la nube</div>
+    </div>
+
+    <!-- MODO OSCURO -->
+    <div class="frame-wrap">
+      <div class="phone"><div class="screen dark"><div class="notch"></div>
+        <div class="statusbar"><span>9:41</span><span>Pekín · UTC+8</span></div>
+        <div class="app"><div class="content">
+          <div class="ahead"><div class="kicker">Hoy · jue 28 may</div><h2>Hola, 🐻 y 🐰</h2><div class="couple">vuestro 4.º día juntos en China</div></div>
+          <div class="card" style="background:linear-gradient(135deg,#C9402E,#A8301F);border:none;color:#fff;border-radius:22px">
+            <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:600">Pekín</div>
+            <div style="font-family:var(--display);font-size:22px;font-weight:600;margin:5px 0 8px">Ciudad Prohibida y hutongs</div>
+            <div style="font-size:13px;opacity:.92">Un día tranquilo antes del aniversario de mañana.</div>
+          </div>
+          <div class="section-t">Próximo</div>
+          <div class="card mini">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg></div>
+            <div class="body"><div class="t">Tren a Xi'an</div><div class="m">Mañana · 14:32 · coche 6, 7A·7B</div></div>
+            <div class="go">Ver billete ›</div>
+          </div>
+          <div class="section-t">Plan de hoy</div>
+          <div class="card" style="padding:6px 14px">
+            <div class="act"><div class="time">09:30</div><div><div class="at">Ciudad Prohibida</div><div class="am"><span class="chip bear">🐻 Borja</span></div></div></div>
+            <div class="act"><div class="time">18:00</div><div><div class="at">Atardecer en Jingshan</div><div class="am"><span class="chip bear">🐻</span> <span class="chip bun">🐰</span> juntos</div></div></div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9h14v-9"/></svg>Hoy</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M4 8h16M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z"/></svg>Itinerario</a>
+          <a href="#"><svg viewBox="0 0 24 24"><path d="M2 16l9-3 4-9 2 1-2 8 6 2v2l-8-1-3 5-2-1 1-5-7 1z"/></svg>Vuelos</a>
+          <a href="#"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-3M15 21l2-3"/></svg>Trenes</a>
+          <a href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>Más</a>
+        </nav>
+        </div></div></div>
+      <div class="frame-label"><b>Modo oscuro</b> — tinta china sobre papel envejecido, mismo sistema</div>
+    </div>
+
+  </div>
+
+  <div class="footnote">
+    <b>Documento único de diseño.</b> 14 pantallas que cubren toda la app (Hoy, Itinerario por ciudad, Detalle de día, Lugar, Vuelos, Trenes, Visor de documento, Gastos+Conversor, Preparativos+Alojamientos, Diario, Más, Login, Sync+Backup) en claro y oscuro. Es la <b>especificación visual congelada</b>: al construir en Compose se traduce a <code>ColorScheme</code> (claro/oscuro) + <code>Typography</code> + componentes reutilizables (Card, Hero, chips 🐻/🐰, hilo rojo, bottom nav).
+  </div>
+
+</div>
+</body>
+</html>
