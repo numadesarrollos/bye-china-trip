@@ -1,80 +1,49 @@
-# ============ Gradle / Kotlin Multiplatform ============
-.gradle/
-build/
+# Gradle
+*.iml
+.gradle
 **/build/
 !src/**/build/
-out/
-*.class
-kotlin-js-store/
-.kotlin/
+gradle.properties.local
 
-# Gradle wrapper: NO ignorar el wrapper (debe versionarse)
-# (gradle/wrapper/gradle-wrapper.jar y .properties SÍ se commitean)
-
-# Configuración local de máquina (rutas del SDK, etc.)
+# Android
 local.properties
+captures
+.externalNativeBuild
+.cxx
 
-# ============ Android ============
-*.apk
-*.aab
-*.ap_
-*.dex
-release/
-captures/
-.cxx/
-*.keystore
-*.jks
-google-services.json.bak
+# Kotlin Multiplatform
+.kotlin
+xcuserdata
 
-# ============ iOS / Xcode ============
-xcuserdata/
-*.xcuserstate
-*.xcscmblueprint
-DerivedData/
-*.hmap
-*.ipa
-*.dSYM.zip
-*.dSYM
-iosApp/Pods/
-iosApp/*.xcworkspace/xcuserdata/
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
 
-# CocoaPods (si se usa)
-Pods/
-Podfile.lock
-
-# ============ IDEs ============
-# IntelliJ / Android Studio
-.idea/
-*.iml
-*.ipr
-*.iws
-.fleet/
-
-# VS Code
-.vscode/
-
-# ============ Sistema operativo ============
+# IDEs
+.idea
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Thumbs.db
-ehthumbs.db
-desktop.ini
+node_modules/
 
-# ============ Secretos / Firebase ============
-# NUNCA versionar claves ni service accounts.
-# google-services.json (Android) y GoogleService-Info.plist (iOS) contienen
-# config del proyecto Firebase: descomenta si prefieres mantenerlos fuera del repo.
-# **/google-services.json
-# **/GoogleService-Info.plist
-*.env
-.env.local
-secrets.properties
+# ── SECRETS — NEVER COMMIT ────────────────────────────────────────────────────
+# Android signing
+*.jks
+*.keystore
+*.p12
+
+# Firebase service account (Cloud Functions / admin SDK)
 serviceAccountKey.json
+*serviceAccount*.json
 
-# ============ Logs y temporales ============
-*.log
-*.tmp
-tmp/
+# Environment / config files with credentials
+.env
+*.env
+*.env.local
+*.env.production
+
+# API keys
+secrets.properties
+apikeys.properties

@@ -1,161 +1,109 @@
-# 🇨🇳 Nuestro viaje a China — Borja 🐻 & Esther 🐰
+# Nuestro viaje a China 🐻🐰
 
-App personal y **offline-first** para el viaje de Borja y Esther a China (noviembre 2026).
-Centraliza itinerario, lugares, documentos/billetes, vuelos, trenes y utilidades de viaje,
-con sincronización entre 2 móviles vía Firebase.
-
-> El concepto visual es el **hilo rojo del destino (红线)**: la leyenda china que une a dos
-> personas con un hilo invisible. En la app es la columna del itinerario; 🐻 y 🐰 firman
-> cada plan que añaden.
+App personal para el viaje de Borja y Esther a China (noviembre 2026).
+Offline-first — todo funciona sin internet; sincroniza en background cuando hay conexión.
 
 ---
 
-## Stack tecnológico
+## Stack técnico
 
 | Capa | Tecnología |
-|------|-----------|
-| Lenguaje / UI | **Kotlin Multiplatform + Compose Multiplatform** (Android + iOS) |
-| **Librería base** | **[nd-kpm-base](https://github.com/numadesarrollos/nd-kpm-base)** (git submodule `base/`) — NDViewModel MVI, NDUseCase, NDResult, NDDispatcherProvider |
-| BD local (fuente de verdad) | **SQLDelight** |
-| Sincronización | **Firebase** — Firestore + Cloud Storage + Auth (GitLive `dev.gitlive`) |
-| Navegación | Decompose / Voyager |
-| DI | Koin |
-| Asincronía | Coroutines + Flow (StateFlow) |
-| Fechas | kotlinx-datetime (China = UTC+8, sin DST) |
-| Serialización | kotlinx-serialization |
+|------|------------|
+| UI | Compose Multiplatform (Android + iOS) |
+| Arquitectura | MVI — NDViewModel / NDScreen (nd-kpm-base) |
+| Base de datos local | SQLDelight 2 |
+| Backend / sync | Firebase (Firestore + Storage + Auth) — GitLive KMP SDK |
+| DI | Koin 4 |
+| Navegación | CMP Navigation Compose |
 | Imágenes | Coil 3 |
-| PDF / ficheros | expect/actual: PdfRenderer (Android) / PDFKit (iOS) |
-| Notificaciones | expect/actual: WorkManager (Android) / UNUserNotificationCenter (iOS) |
+| Fechas | kotlinx-datetime (China = UTC+8, sin DST) |
+| Serialización | kotlinx-serialization (backup JSON + Firestore) |
+| Kotlin | 2.3.0 · CMP 1.10.0 · AGP 8.13.2 · minSdk 26 |
 
 ---
 
-## Arquitectura de módulos
+## Arquitectura
 
 ```
-:composeApp          → UI Compose Multiplatform, pantallas, navegación, tema
-:shared
-   ├── domain        → modelos, casos de uso, interfaces de repositorio
-   ├── data          → repositorios, SQLDelight, gestor de ficheros, backup JSON
-   ├── sync          → motor Firebase (push/pull, LWW, cola de ficheros)
-   └── platform      → expect/actual (picker, visor PDF, notificaciones, rutas)
-:androidApp          → entry point Android
-:iosApp              → entry point iOS (host SwiftUI + Compose)
+:app:androidApp   ← Entry point Android
+:app:shared       ← UI Compose + ViewModels (usa :core)
+:core             ← Dominio: entidades, repositorios, casos de uso, SQLDelight
+base/             ← nd-kpm-base (git submodule) — clases base MVI
 ```
 
-**Patrón:** MVVM/MVI con `StateFlow`.
-**Fuente de verdad:** SQLDelight local. La UI siempre lee de local (funciona sin red).
-El motor de sync replica en segundo plano contra Firebase cuando hay conexión.
+### Reglas arquitecturales
 
-**Campos de sync en TODAS las entidades:** `updatedAt`, `deleted` (borrado lógico),
-`syncState` (synced / pendingUpload), `createdBy` (bear / bun).
-**Resolución de conflictos:** last-write-wins por `updatedAt`.
+- La UI **nunca** lee de Firebase directamente. Solo lee de SQLDelight.
+- Toda escritura va primero a SQLDelight; el motor de sync la empuja a Firebase.
+- Todo ViewModel extiende `NDViewModel<S,E,F>`.
+- Todo caso de uso extiende `NDUseCase<P,R>`.
+- Resultados siempre como `NDResult<T>`.
 
----
+### Campos de sync obligatorios en todas las entidades
 
-## Modelo de datos (resumen)
-
-**Core:** `Trip`, `Place`, `Day`, `Location`, `Activity`, `Document`, `Flight`, `TrainTrip`
-
-**Extras:** `Expense`, `CurrencyRate`, `ChecklistItem`, `Accommodation`, `DiaryEntry`, `Reminder`, `Phrase`
-
-Jerarquía: `Trip` → `Place` → (por `Day`) → `Location` + `Activity` + `Document`;
-en paralelo del `Trip`: `Flight`, `TrainTrip`, `Expense`, `ChecklistItem`, `Accommodation`, `DiaryEntry`, `Reminder`.
+```kotlin
+val updatedAt  : Long,     // ms Unix — resolución de conflictos LWW
+val deleted    : Boolean,  // borrado lógico — nunca DELETE físico
+val syncState  : String,   // "synced" | "pendingUpload"
+val createdBy  : String,   // "bear" | "bun"
+```
 
 ---
 
-## Diseño
+## Módulos
 
-La especificación visual está congelada en **`diseno/diseno-completo.html`** (14 pantallas,
-modo claro y oscuro). Ábrelo en un navegador para ver el sistema completo.
+### `:core`
+Lógica de negocio y acceso a datos. Sin dependencias de UI.
+- Entidades del dominio
+- Esquemas SQLDelight (`.sq`)
+- Implementaciones de repositorios
+- Casos de uso
 
-Tokens de diseño:
-- `--cinnabar` `#C9402E` — hilo rojo / acción principal
-- `--amber` `#B07A43` — 🐻 Borja
-- `--blush` `#D5808F` — 🐰 Esther
-- `--gold` `#C2A05A` — fechas especiales (aniversario)
-- `--paper` `#FCF7F2` — fondo (papel de arroz)
-- `--ink` `#2B2521` — texto
+### `:app:shared`
+Todo lo que toca Compose. Depende de `:core`.
+- Pantallas (extienden `NDScreen`)
+- ViewModels (extienden `NDViewModel`)
+- Tema (colores, tipografía, shapes)
+- Componentes reutilizables
 
-Tipografías: **Fraunces** (títulos) · **Inter** (interfaz) · **Caveat** (toques personales)
-
-En Compose: `ColorScheme` claro/oscuro + `Typography` + componentes reutilizables (Card, Hero, chips 🐻/🐰, timeline hilo rojo, bottom nav).
-
----
-
-## Fases de desarrollo
-
-| Fase | Descripción | Estado |
-|------|-------------|--------|
-| 0 | Diseño completo (mockups HTML) | ✅ Completada |
-| 1 | Setup KMP + Compose + Firebase Auth + tema Compose | ⏳ Siguiente |
-| 2 | Datos: SQLDelight schema + repositorios + dominio | ⬜ |
-| 3 | Itinerario: Trip, Lugares, Días (CRUD + navegación) | ⬜ |
-| 4 | Ubicaciones y actividades por día | ⬜ |
-| 5 | Documentos: picker + almacenamiento local + visor PDF offline | ⬜ |
-| 6 | Vuelos y Trenes: CRUD + billete offline | ⬜ |
-| 7 | Extras: Gastos, Conversor, Preparativos, Alojamientos, Diario, Recordatorios, Frases, Emergencias | ⬜ |
-| 8 | Sincronización Firebase: push/pull, LWW, cola de ficheros | ⬜ |
-| 9 | Backup JSON, pulido UI, pruebas Android + iOS | ⬜ |
-
-**Hito MVP (Fase 6):** itinerario + documentos + vuelos + trenes, todo offline en cada móvil.
-**Fecha límite:** octubre 2026 (viaje en noviembre 2026).
+### `base/` (submodule)
+Librería base KMP privada. Ver `AGENTS.md` para las reglas de uso.
 
 ---
 
-## Versiones fijadas
+## Diseño / mockups
 
-Fijadas por el submodule `nd-kpm-base` — no cambiar de forma independiente:
+Ver [`diseno/diseno-completo.html`](diseno/diseno-completo.html) — 14 pantallas, modo claro y oscuro.
 
-| | Versión |
-|---|---|
-| Kotlin | 2.3.0 |
-| Compose Multiplatform | 1.10.0 |
-| AGP | 8.13.2 |
-| compileSdk / targetSdk | 36 |
-| minSdk | 26 |
-| Coroutines | 1.9.0 |
-| Koin | 4.0.0 |
-| kotlinx-serialization | 1.7.3 |
-| kotlinx-datetime | 0.6.1 |
+Tokens visuales clave:
+
+| Token | Color | Uso |
+|-------|-------|-----|
+| `--cinnabar` | `#C9402E` | Hilo rojo — acento principal |
+| `--amber` | `#B07A43` | Borja 🐻 |
+| `--blush` | `#D5808F` | Esther 🐰 |
+| `--gold` | `#C2A05A` | Fechas especiales |
+| `--paper` | `#FCF7F2` | Fondo claro |
+| `--ink` | `#2B2521` | Texto sobre fondo claro |
+
+Tipografías: **Fraunces** (títulos) · **Inter** (UI) · **Caveat** (toques personales).
 
 ---
 
-## Setup del entorno de desarrollo
+## Cómo ejecutar
 
-### Requisitos
-- **Android Studio** (última versión estable) + JDK 17+
-- **Xcode 15+** en Mac (obligatorio para compilar iOS)
-- **Kotlin Multiplatform Plugin** para Android Studio
-- Cuenta en [Firebase Console](https://console.firebase.google.com) con acceso al proyecto
-
-### Clonar y abrir
 ```bash
-git clone --recurse-submodules https://github.com/numadesarrollos/bye-china-trip.git
-cd bye-china-trip
+# Android
+./gradlew :app:androidApp:assembleDebug
+
+# iOS — abrir en Xcode
+open app/iosApp/iosApp.xcodeproj
 ```
 
-> El flag `--recurse-submodules` clona también `nd-kpm-base` en `base/`. Sin él faltará la librería base.
-Abrir en Android Studio → `Open` → seleccionar la carpeta raíz.
-
-> ⚠️ El proyecto KMP todavía no existe (se crea en la Fase 1). Esta sección se completará
-> cuando esté el `build.gradle.kts` raíz.
-
-### Variables de entorno y secretos
-- `local.properties` (ignorado por git) → ruta del SDK de Android.
-- `google-services.json` (Android) y `GoogleService-Info.plist` (iOS) → config de Firebase.
-  Solicitarlos al administrador del proyecto.
-- **Nunca** commitear `serviceAccountKey.json`, ficheros `.env` ni keystores.
-
 ---
 
-## Convenciones de código
+## Desarrollo
 
-Ver **`AGENTS.md`** para las reglas que deben seguir todos los agentes y colaboradores.
-
----
-
-## Contexto especial: China 🇨🇳
-
-Firebase (Google) está **bloqueado en China** sin VPN. La sincronización en vivo requiere
-una VPN de terceros. Sin VPN, todo funciona en local y los cambios se sincronizan al recuperar
-red. Por eso el principio de diseño es **offline-first**: la app es 100% funcional sin internet.
+- **Fases y estado:** ver [`DEVLOG.md`](DEVLOG.md)
+- **Reglas para agentes IA (Claude Code, Devin):** ver [`AGENTS.md`](AGENTS.md)
+- **Decisiones cerradas:** stack y arquitectura NO se reabren salvo problema técnico bloqueante.
