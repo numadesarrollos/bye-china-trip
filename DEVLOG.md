@@ -93,14 +93,14 @@
 ### Checklist de arranque
 
 **Android — se puede hacer ahora:**
-- [ ] Colocar `google-services.json` en `app/androidApp/` (descargado de Firebase console)
+- [x] Colocar `google-services.json` en `app/androidApp/` ✅
 - [ ] Sync Gradle en Android Studio
 - [ ] Ejecutar en dispositivo/emulador Android — debe abrir LoginScreen
 - [ ] Crear usuario de prueba en Firebase (Auth → Users → Add user)
 - [ ] Probar login con ese usuario → si navega (sin crash) la Auth funciona ✅
 
 **iOS — requiere Mac:**
-- [ ] Colocar `GoogleService-Info.plist` en `app/iosApp/iosApp/` (junto a ContentView.swift)
+- [x] Colocar `GoogleService-Info.plist` en `app/iosApp/iosApp/` ✅
 - [ ] Abrir `app/iosApp/iosApp.xcodeproj` en Xcode
 - [ ] File → Add Package Dependencies → `https://github.com/firebase/firebase-ios-sdk` → seleccionar `FirebaseAuth` → Add to target `iosApp`
 - [ ] Compilar en simulador iOS → probar login ✅
