@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    // TODO Firebase: uncomment after placing google-services.json in this directory
+    // id("com.google.gms.google-services") version "4.4.2"
 }
 
 kotlin {

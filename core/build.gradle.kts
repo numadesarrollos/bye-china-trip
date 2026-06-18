@@ -32,6 +32,9 @@ kotlin {
             // nd-kpm-base: domain layer (NDUseCase, NDResult, NDRepository, NDDispatcherProvider)
             api("com.numadesarrollos.base:domain:1.0.0")
 
+            // Firebase (GitLive KMP) — auth lives here; Firestore/Storage added in Phase 8
+            implementation(libs.firebase.auth)
+
             // Kotlin
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)

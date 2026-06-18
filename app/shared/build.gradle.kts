@@ -55,11 +55,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime)
 
-            // Firebase (GitLive KMP SDK)
-            implementation(libs.firebase.auth)
-            implementation(libs.firebase.firestore)
-            implementation(libs.firebase.storage)
-
             // Image loading
             implementation(libs.coil.compose)
         }

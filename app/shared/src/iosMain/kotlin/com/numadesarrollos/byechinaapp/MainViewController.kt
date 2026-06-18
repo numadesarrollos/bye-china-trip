@@ -1,5 +1,6 @@
 package com.numadesarrollos.byechinaapp
 
-import androidx.compose.ui.window.ComposeUIViewController
+import com.numadesarrollos.base.presentation.controller.NDViewController
+import platform.UIKit.UIViewController
 
-fun MainViewController() = ComposeUIViewController { App() }
+fun MainViewController(): UIViewController = NDViewController { App() }
