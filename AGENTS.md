@@ -21,7 +21,16 @@ completo y la arquitectura.
 - No implementar código de una fase posterior sin haber cerrado la actual.
 - Si se detecta algo que pertenece a otra fase, anotarlo en `DEVLOG.md` (sección "backlog") y continuar.
 
-### 2. Antes de añadir código nuevo
+### 2. Librería base — usar siempre, no reinventar
+- Todo ViewModel **extiende `NDViewModel<S, E, F>`** del submodule `base/presentation`.
+- Toda pantalla Compose **usa `NDScreen`** del submodule como composable raíz.
+- Todo caso de uso **extiende `NDUseCase<P, R>`**; los resultados son siempre `NDResult<T>`.
+- Todo repositorio **implementa `NDRepository`**.
+- Los dispatchers se inyectan siempre como `NDDispatcherProvider` (nunca `Dispatchers.IO` hardcodeado).
+- Las versiones de Kotlin, CMP y AGP están **fijadas por el submodule** (`base/gradle/libs.versions.toml`).
+  No actualizar estas versiones en el proyecto principal sin actualizar el submodule primero.
+
+### 3. Antes de añadir código nuevo
 - Buscar primero si ya existe una función, componente o utilidad que haga lo mismo.
 - Reutilizar componentes Compose existentes en `:composeApp` antes de crear nuevos.
 - No abstraer prematuramente: tres líneas similares no justifican un helper.

@@ -40,11 +40,15 @@
   - Gastos: fila de **filtros por categoría** (Todos/Transporte/Hoteles/Comida/Entradas/Compras).
   - Itinerario: vista **agrupada por ciudad, colapsable** (cabecera pliega; fila de día con `›` navega al Detalle de día).
 - Memoria del proyecto guardada.
-- Creados `CLAUDE.md` (contexto auto-cargado en cada sesión) y este `DEVLOG.md`.
-- **Diseños unificados** en un único fichero `diseno/diseno-completo.html` (14 pantallas); eliminado `mockups-fase0.html`.
-- Inicializado repositorio git con `.gitignore` para KMP (Android + iOS).
+- Creados `AGENTS.md` (protocolo unificado para todos los agentes) y este `DEVLOG.md`.
+- **Diseños unificados** en un único fichero `diseno/diseno-completo.html` (14 pantallas).
 - Repo publicado en GitHub: https://github.com/numadesarrollos/bye-china-trip
-- Creados `README.md` y `AGENTS.md` para compatibilidad total con Devin y otros agentes IA.
+- Creados `README.md` y `AGENTS.md` para compatibilidad total con Devin y Claude Code.
+- **Analizada librería base `nd-kpm-base`** (github.com/numadesarrollos/nd-kpm-base):
+  se integrará como **git submodule** en `base/`. Aporta: NDViewModel (MVI), NDScreen,
+  NDUseCase, NDResult, NDFailure, NDDispatcherProvider, NDRepository.
+  Versiones fijadas: Kotlin 2.3.0 · CMP 1.10.0 · AGP 8.13.2 · Koin 4.0 · minSdk 26.
+- Plan actualizado con submodule, arquitectura revisada y versiones fijadas.
 
 **Decisiones de diseño tomadas (validar si se reabren):**
 - Bottom nav de 5 pestañas: Hoy · Itinerario · Vuelos · Trenes · Más (extras dentro de "Más").
@@ -55,16 +59,19 @@
 
 ## 🔜 Para el siguiente día (arrancar aquí)
 
-**Próxima fase: Fase 1 — Setup KMP + Firebase + tema.**
+**Próxima fase: Fase 1 — Setup KMP + librería base (submodule) + Firebase + tema.**
 
-Antes de programar / a confirmar al arrancar:
-- [ ] Verificar versiones: Android Studio, JDK, Kotlin, Gradle, Xcode (Mac).
-- [ ] Crear proyecto KMP con módulos `composeApp` + `shared` (domain/data/sync/platform) según arquitectura del plan.
-- [ ] Configurar Firebase: crear proyecto en consola, **plan Blaze con alerta de presupuesto a 0 €**, habilitar Auth (email/contraseña).
-- [ ] Integrar GitLive firebase-kotlin-sdk y **probar Auth en iOS pronto** (riesgo conocido de fricción en iOS).
-- [ ] Traducir el mockup a tema Compose: `ColorScheme` claro/oscuro + `Typography` (Fraunces/Inter/Caveat) + componentes base (Card, Hero, chips 🐻/🐰, timeline hilo rojo, bottom nav).
+Checklist antes de programar:
+- [ ] Usuario crea proyecto KMP en Android Studio (plantilla Compose Multiplatform) en la carpeta raíz del repo.
+- [ ] Añadir submodule: `git submodule add https://github.com/numadesarrollos/nd-kpm-base.git base`
+- [ ] Conectar en `settings.gradle.kts` con `includeBuild("base")`
+- [ ] Sincronizar `libs.versions.toml` con versiones del submodule: Kotlin 2.3.0 · CMP 1.10.0 · AGP 8.13.2 · Koin 4.0 · minSdk 26
+- [ ] Añadir al `libs.versions.toml`: SQLDelight, navegación (Decompose/Voyager), Coil 3, GitLive Firebase KMP
+- [ ] Configurar Firebase: crear proyecto en consola, **plan Blaze con alerta a 0 €**, habilitar Auth (email/contraseña)
+- [ ] Hello world Auth en iOS con GitLive — validar pronto, es el mayor riesgo técnico
+- [ ] Traducir mockup a tema Compose: `ColorScheme` (claro/oscuro) + `Typography` (Fraunces/Inter/Caveat) + componentes base
 
-**Mejoras / pendientes detectados (backlog):**
-- Decidir estado inicial del itinerario por ciudad: ¿todo plegado o desplegada la ciudad de "hoy"? (recomendado: desplegar la de hoy).
-- Decidir si las categorías de gasto son fijas o editables (recomendado: fijas para un viaje).
-- Confirmar fechas reales del viaje (el mockup usa fechas de mayo ilustrativas; el viaje es en noviembre 2026).
+**Backlog de mejoras detectadas:**
+- Estado inicial del itinerario por ciudad: desplegar automáticamente la ciudad de "hoy", resto plegado.
+- Categorías de gasto: fijas (las 6 del mockup) para simplificar.
+- Confirmar fechas reales del viaje (mockup usa mayo como ejemplo; viaje real en noviembre 2026).

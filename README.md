@@ -15,6 +15,7 @@ con sincronización entre 2 móviles vía Firebase.
 | Capa | Tecnología |
 |------|-----------|
 | Lenguaje / UI | **Kotlin Multiplatform + Compose Multiplatform** (Android + iOS) |
+| **Librería base** | **[nd-kpm-base](https://github.com/numadesarrollos/nd-kpm-base)** (git submodule `base/`) — NDViewModel MVI, NDUseCase, NDResult, NDDispatcherProvider |
 | BD local (fuente de verdad) | **SQLDelight** |
 | Sincronización | **Firebase** — Firestore + Cloud Storage + Auth (GitLive `dev.gitlive`) |
 | Navegación | Decompose / Voyager |
@@ -101,6 +102,24 @@ En Compose: `ColorScheme` claro/oscuro + `Typography` + componentes reutilizable
 
 ---
 
+## Versiones fijadas
+
+Fijadas por el submodule `nd-kpm-base` — no cambiar de forma independiente:
+
+| | Versión |
+|---|---|
+| Kotlin | 2.3.0 |
+| Compose Multiplatform | 1.10.0 |
+| AGP | 8.13.2 |
+| compileSdk / targetSdk | 36 |
+| minSdk | 26 |
+| Coroutines | 1.9.0 |
+| Koin | 4.0.0 |
+| kotlinx-serialization | 1.7.3 |
+| kotlinx-datetime | 0.6.1 |
+
+---
+
 ## Setup del entorno de desarrollo
 
 ### Requisitos
@@ -111,9 +130,11 @@ En Compose: `ColorScheme` claro/oscuro + `Typography` + componentes reutilizable
 
 ### Clonar y abrir
 ```bash
-git clone https://github.com/numadesarrollos/bye-china-trip.git
+git clone --recurse-submodules https://github.com/numadesarrollos/bye-china-trip.git
 cd bye-china-trip
 ```
+
+> El flag `--recurse-submodules` clona también `nd-kpm-base` en `base/`. Sin él faltará la librería base.
 Abrir en Android Studio → `Open` → seleccionar la carpeta raíz.
 
 > ⚠️ El proyecto KMP todavía no existe (se crea en la Fase 1). Esta sección se completará
