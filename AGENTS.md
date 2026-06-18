@@ -1,0 +1,112 @@
+# AGENTS.md — Instrucciones para agentes IA
+
+Este fichero es leído por todos los agentes IA que trabajen en este repositorio
+(Claude Code, Devin, Copilot Workspace, etc.). Define las reglas del proyecto que
+**todos deben seguir** sin excepción.
+
+---
+
+## Contexto del proyecto
+
+App personal Kotlin Multiplatform para el viaje de Borja 🐻 y Esther 🐰 a China
+(noviembre 2026). Offline-first con sync Firebase. Ver `README.md` para el stack
+completo y la arquitectura.
+
+---
+
+## Reglas de trabajo
+
+### 1. Una fase a la vez
+- Consultar siempre el estado de las fases en `README.md` (tabla de fases).
+- No implementar código de una fase posterior sin haber cerrado la actual.
+- Si se detecta algo que pertenece a otra fase, anotarlo en `DEVLOG.md` (sección "backlog") y continuar.
+
+### 2. Antes de añadir código nuevo
+- Buscar primero si ya existe una función, componente o utilidad que haga lo mismo.
+- Reutilizar componentes Compose existentes en `:composeApp` antes de crear nuevos.
+- No abstraer prematuramente: tres líneas similares no justifican un helper.
+
+### 3. Fuente de verdad = SQLDelight local
+- La UI **nunca** lee directamente de Firebase. Siempre lee de SQLDelight.
+- Toda escritura va **primero a SQLDelight**; el motor de sync se encarga del push a Firebase.
+- Nunca esperar a la red para confirmar una operación al usuario.
+
+### 4. Campos de sync obligatorios
+Toda entidad nueva debe tener:
+```kotlin
+val updatedAt: Long,    // timestamp Unix ms — para resolución de conflictos LWW
+val deleted: Boolean,   // borrado lógico — nunca DELETE físico en tablas sincronizadas
+val syncState: String,  // "synced" | "pendingUpload"
+val createdBy: String,  // "bear" | "bun" — quién creó el registro
+```
+
+### 5. Secretos y seguridad
+- **Nunca** hardcodear API keys, tokens, contraseñas ni localizadores en el código.
+- `google-services.json` y `GoogleService-Info.plist` pueden estar en el repo (app personal),
+  pero `serviceAccountKey.json`, ficheros `.env` y keystores **nunca**.
+- No commitear `local.properties`.
+
+### 6. Idioma
+- **Código:** inglés (nombres de variables, funciones, clases, comentarios técnicos).
+- **UI y strings de la app:** español.
+- **Commits y documentación del proyecto:** español.
+
+### 7. Commits
+- Un commit por tarea/cambio cohesivo. No mezclar refactors con features.
+- Formato del mensaje:
+  ```
+  tipo(alcance): descripción corta en español
+
+  Cuerpo opcional si hay contexto relevante.
+  ```
+  Tipos: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`.
+  Ejemplo: `feat(itinerario): añadir agrupación por ciudad colapsable`
+- No usar `--no-verify` ni saltarse hooks.
+- Push al terminar cada fase o tarea completa, no commits intermedios rotos.
+
+### 8. Diseño
+- El fichero `diseno/diseno-completo.html` es la **especificación visual congelada**.
+  Abrirlo en un navegador para ver colores, tipografías y componentes.
+- En Compose: usar siempre los tokens del tema (`MaterialTheme.colorScheme.*`,
+  `MaterialTheme.typography.*`). Nunca colores o tamaños hardcodeados.
+- Componentes reutilizables viven en `:composeApp/ui/components/`.
+
+### 9. iOS
+- El proyecto compila y corre en **Android e iOS**. No añadir código que rompa iOS.
+- Los `expect/actual` van en `:shared/platform/`. Implementar siempre los dos lados.
+- Probar en simulador iOS antes de cerrar cualquier PR que toque código multiplataforma.
+
+### 10. Qué NO hacer
+- No reescribir código que funciona sin una razón técnica clara.
+- No añadir dependencias nuevas sin justificarlo en el PR/commit.
+- No crear ficheros de documentación intermedios (análisis, planes, decisiones) en el repo —
+  esos van al `DEVLOG.md` o a la memoria del agente.
+- No cambiar el stack ni reabrir decisiones ya cerradas (ver sección "Stack" en `README.md`).
+
+---
+
+## Flujo de trabajo para Devin
+
+1. **Al empezar una tarea:** leer `DEVLOG.md` sección "🔜 Para el siguiente día" para entender
+   qué toca y qué quedó pendiente.
+2. **Implementar** siguiendo las reglas anteriores.
+3. **Al terminar:** actualizar `DEVLOG.md` (qué se hizo, marcar fase, añadir al backlog si algo quedó).
+4. **Abrir PR** contra `main` con descripción de los cambios. Claude Code revisará y hará merge.
+
+## Flujo de trabajo para Claude Code
+
+1. Leer `CLAUDE.md` (protocolo de sesión específico de Claude Code).
+2. Leer `DEVLOG.md` sección "🔜 Para el siguiente día".
+3. Trabajar, actualizar DEVLOG al terminar, hacer commit + push.
+
+---
+
+## Estructura de ramas (propuesta, a seguir en Fase 1)
+
+```
+main          → código estable, siempre compila
+fase/N-nombre → rama por fase (ej: fase/1-setup-kmp)
+fix/descripcion
+```
+Los agentes abren PRs de sus ramas hacia `main`. No pushear directamente a `main`
+salvo commits de documentación.

@@ -43,6 +43,8 @@
 - Creados `CLAUDE.md` (contexto auto-cargado en cada sesión) y este `DEVLOG.md`.
 - **Diseños unificados** en un único fichero `diseno/diseno-completo.html` (14 pantallas); eliminado `mockups-fase0.html`.
 - Inicializado repositorio git con `.gitignore` para KMP (Android + iOS).
+- Repo publicado en GitHub: https://github.com/numadesarrollos/bye-china-trip
+- Creados `README.md` y `AGENTS.md` para compatibilidad total con Devin y otros agentes IA.
 
 **Decisiones de diseño tomadas (validar si se reabren):**
 - Bottom nav de 5 pestañas: Hoy · Itinerario · Vuelos · Trenes · Más (extras dentro de "Más").
