@@ -85,19 +85,37 @@ val createdBy: String,  // "bear" | "bun" — quién creó el registro
 
 ---
 
-## Flujo de trabajo para Devin
+## Protocolo de sesión (obligatorio para todos los agentes)
 
-1. **Al empezar una tarea:** leer `DEVLOG.md` sección "🔜 Para el siguiente día" para entender
-   qué toca y qué quedó pendiente.
-2. **Implementar** siguiendo las reglas anteriores.
-3. **Al terminar:** actualizar `DEVLOG.md` (qué se hizo, marcar fase, añadir al backlog si algo quedó).
-4. **Abrir PR** contra `main` con descripción de los cambios. Claude Code revisará y hará merge.
+### Al EMPEZAR cualquier sesión o tarea
 
-## Flujo de trabajo para Claude Code
+1. **Leer `DEVLOG.md`** — sección "🔜 Para el siguiente día":
+   qué toca, qué quedó a medias, mejoras detectadas y backlog pendiente.
+2. **Consultar el plan completo** en
+   `C:\Users\borja\.claude\plans\c-users-borja-appdata-local-temp-plan-a-happy-key.md`
+   para entender el contexto de la fase actual.
+3. **Verificar la rama correcta** antes de escribir código:
+   trabajar siempre en `fase/N-nombre` o `fix/descripcion`, nunca directamente en `main`
+   salvo commits de documentación.
 
-1. Leer `CLAUDE.md` (protocolo de sesión específico de Claude Code).
-2. Leer `DEVLOG.md` sección "🔜 Para el siguiente día".
-3. Trabajar, actualizar DEVLOG al terminar, hacer commit + push.
+### Durante el trabajo
+
+- Trabajar **una fase a la vez**; no saltar a la siguiente sin cerrar la actual.
+- Si se detecta una mejora o tarea fuera del alcance actual: **anotarla en el backlog
+  del `DEVLOG.md`** y continuar — no implementarla en ese momento.
+- Antes de crear código nuevo, buscar si ya existe algo reutilizable en el repo.
+- Commitear con frecuencia (por tarea/cambio cohesivo), **nunca commits rotos**.
+
+### Al TERMINAR cualquier sesión o tarea
+
+1. **Actualizar `DEVLOG.md`**:
+   - Añadir entrada en "Registro por sesión" con fecha y resumen de qué se hizo.
+   - Actualizar el estado de la fase en la tabla (⬜ → 🔧 en progreso → ✅ completada).
+   - Reescribir "🔜 Para el siguiente día": qué queda, qué quedó a medias, backlog detectado.
+2. **Hacer commit del DEVLOG** junto con el código de la sesión.
+3. **Push y PR**:
+   - Devin: abrir PR contra `main` con descripción de cambios.
+   - Claude Code: push directo si es la rama de fase activa; PR si hay dudas.
 
 ---
 

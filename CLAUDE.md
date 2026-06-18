@@ -5,11 +5,8 @@ con sincronización entre 2 móviles. Concepto visual: el **hilo rojo del destin
 del itinerario y firma 🐻/🐰 en cada plan.
 
 ## ⚠️ Al empezar cualquier sesión
-1. **Lee `DEVLOG.md`**, en concreto la sección **"🔜 Para el siguiente día"** — ahí está qué toca,
-   qué quedó a medias y las mejoras detectadas.
-2. Consulta el plan completo: `C:\Users\borja\.claude\plans\c-users-borja-appdata-local-temp-plan-a-happy-key.md`
-3. **Al terminar la sesión**, actualiza `DEVLOG.md`: registro de lo hecho + actualizar "🔜 Para el
-   siguiente día" + marcar el estado de las fases.
+El protocolo completo de sesión (inicio, durante y cierre) está en **`AGENTS.md`** — sección
+"Protocolo de sesión". Seguirlo siempre, igual que Devin.
 
 ## Stack (decidido, no re-preguntar)
 Kotlin Multiplatform + Compose Multiplatform (**Android + iOS**) · SQLDelight (BD local, fuente de
