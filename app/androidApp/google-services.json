@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "371682438373",
+    "project_id": "bye-china-trip",
+    "storage_bucket": "bye-china-trip.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371682438373:android:8b07671a3f16682df6b80c",
+        "android_client_info": {
+          "package_name": "com.numadesarrollos.byechinaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPqn9YwlHeZfYleWWbiip7j1neHpNjJiw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
