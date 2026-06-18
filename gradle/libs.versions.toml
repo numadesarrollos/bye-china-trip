@@ -9,13 +9,14 @@ android-minSdk          = "26"
 android-targetSdk       = "36"
 
 # ── AndroidX ─────────────────────────────────────────────────────────────────
-androidx-activity       = "1.13.0"
+androidx-activity       = "1.12.2"
 androidx-appcompat      = "1.7.1"
-androidx-core           = "1.16.0"
-androidx-lifecycle      = "2.11.0-beta01"
+androidx-core           = "1.17.0"
+androidx-lifecycle      = "2.9.6"
 
 # ── Compose Material3 ────────────────────────────────────────────────────────
-material3               = "1.11.0-alpha07"
+# Must match CMP version used by nd-kpm-base (CMP 1.10.0 → material3 1.10.0-alpha05)
+material3               = "1.10.0-alpha05"
 
 # ── Kotlin libraries ─────────────────────────────────────────────────────────
 kotlinx-coroutines      = "1.9.0"
