@@ -88,36 +88,35 @@
 
 ## 🔜 Para el siguiente día (arrancar aquí)
 
-**Próxima tarea: completar Fase 1 — activar Firebase y hacer hello-world en iOS.**
+**Próxima tarea: validar hello-world Auth en Android y, cuando haya Mac, en iOS.**
 
-### ✅ Hecho en código
-- ✅ Proyecto KMP limpio (sin :server, versiones correctas)
-- ✅ nd-kpm-base como submodule + includeBuild
-- ✅ libs.versions.toml con todas las dependencias
-- ✅ Tema Compose (colores, tipografía, AppTheme)
-- ✅ LoginScreen + LoginViewModel + AuthRepositoryImpl (GitLive Firebase)
-- ✅ Koin DI completo (Android + iOS entry points)
+### Checklist de arranque
 
-### ⚠️ Pendiente manual (el usuario lo hace)
-1. **Firebase console:** Crear proyecto → activar plan Blaze → poner alerta de presupuesto a 0 €.
-2. **Firebase Auth:** Habilitar "Email/contraseña" como proveedor.
-3. **Firebase Android:** Registrar app (package: `com.numadesarrollos.byechinaapp`) → descargar `google-services.json` → colocarlo en `app/androidApp/`.
-4. **Descomentar** en `app/androidApp/build.gradle.kts`: `id("com.google.gms.google-services") version "4.4.2"`.
-5. **Firebase iOS:** Registrar app (Bundle ID del iosApp) → descargar `GoogleService-Info.plist` → añadirlo al Xcode project (`app/iosApp/iosApp/`).
-6. **Firebase iOS SDK:** Añadir `FirebaseCore` al Xcode project via Swift Package Manager:
-   - En Xcode: File → Add Package Dependencies → `https://github.com/firebase/firebase-ios-sdk` → añadir `FirebaseAuth`.
-7. **Fuentes Compose:** Descargar TTF de Google Fonts y colocar en `app/shared/src/commonMain/composeResources/font/`:
-   - Fraunces (Regular, SemiBold, Bold)
-   - Inter (Regular, Medium, SemiBold)
-   - Caveat (Regular)
-   Luego sustituir `FontFamily.Default` por `FontFamily(Font(Res.font.xxx))` en `Type.kt`.
-8. **Crear usuario de prueba en Firebase** (Auth → Users → Add user) con email y contraseña.
-9. **Compilar y ejecutar en iOS simulator** con Android Studio / Xcode — el login debería funcionar.
+**Android — se puede hacer ahora:**
+- [ ] Colocar `google-services.json` en `app/androidApp/` (descargado de Firebase console)
+- [ ] Sync Gradle en Android Studio
+- [ ] Ejecutar en dispositivo/emulador Android — debe abrir LoginScreen
+- [ ] Crear usuario de prueba en Firebase (Auth → Users → Add user)
+- [ ] Probar login con ese usuario → si navega (sin crash) la Auth funciona ✅
 
-### Siguiente fase cuando esto compile: Fase 2 — Datos + dominio (SQLDelight)
+**iOS — requiere Mac:**
+- [ ] Colocar `GoogleService-Info.plist` en `app/iosApp/iosApp/` (junto a ContentView.swift)
+- [ ] Abrir `app/iosApp/iosApp.xcodeproj` en Xcode
+- [ ] File → Add Package Dependencies → `https://github.com/firebase/firebase-ios-sdk` → seleccionar `FirebaseAuth` → Add to target `iosApp`
+- [ ] Compilar en simulador iOS → probar login ✅
 
-**Backlog de mejoras detectadas:**
-- Estado inicial del itinerario por ciudad: desplegar automáticamente la ciudad de "hoy", resto plegado.
-- Categorías de gasto: fijas (las 6 del mockup) para simplificar.
-- Confirmar fechas reales del viaje (mockup usa mayo como ejemplo; viaje real en noviembre 2026).
-- Limpiar ficheros wizard sobrantes (Greeting.kt, GreetingUtil.kt, Platform.jvm.kt) cuando arranque Fase 2.
+**Cuando ambas plataformas funcionen → Fase 1 cerrada → arrancar Fase 2**
+
+### Fuentes custom (puede hacerse en cualquier momento, no bloquea nada)
+Descargar TTF de Google Fonts y colocar en `app/shared/src/commonMain/composeResources/font/`:
+- Fraunces: Regular, SemiBold, Bold — https://fonts.google.com/specimen/Fraunces
+- Inter: Regular, Medium, SemiBold — https://fonts.google.com/specimen/Inter
+- Caveat: Regular — https://fonts.google.com/specimen/Caveat
+
+Luego en `Type.kt` sustituir `FontFamily.Default` por `FontFamily(Font(Res.font.xxx))`.
+
+### Backlog detectado
+- Limpiar ficheros wizard sobrantes (Greeting.kt, GreetingUtil.kt, Platform.jvm.kt) — arranque Fase 2.
+- Estado inicial del itinerario: desplegar automáticamente la ciudad de "hoy", resto plegado.
+- Categorías de gasto: fijas (las 6 del mockup).
+- Confirmar fechas reales del viaje (mockup usa mayo; viaje real noviembre 2026).
