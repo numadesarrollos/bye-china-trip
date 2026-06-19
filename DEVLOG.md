@@ -16,8 +16,8 @@
 | Fase | Descripción | Estado |
 |------|-------------|--------|
 | 0 | Ampliar mockup y cerrar diseño | ✅ Completada |
-| 1 | Setup KMP + Firebase + tema | 🔧 En progreso |
-| 2 | Datos + dominio (SQLDelight) | ⬜ Pendiente |
+| 1 | Setup KMP + Firebase + tema | 🔧 En progreso (Android validado; iOS bloqueado por Mac corporativo) |
+| 2 | Datos + dominio (SQLDelight) | 🔧 En progreso (esquema+repos hechos; casos de uso se añaden por fase) |
 | 3 | Itinerario (Trip + Lugares + Días) | ⬜ Pendiente |
 | 4 | Ubicaciones y actividades por día | ⬜ Pendiente |
 | 5 | Documentos (picker + visor offline) | ⬜ Pendiente |
@@ -86,9 +86,66 @@
 
 ---
 
+### 2026-06-19 — Fase 2: esquema completo + validación de build real (sesión 3)
+**Hecho:**
+- **Fase 2 completa (alcance: todas las entidades del plan):**
+  - 15 tablas SQLDelight con campos de sync completos: Trip, Place, Day, Location, Activity,
+    Document, Flight, TrainTrip, Expense, CurrencyRate, ChecklistItem, Accommodation,
+    DiaryEntry, Reminder, Phrase.
+  - Modelos de dominio tipados (kotlinx-datetime, enums `SyncState`/`Owner`) agrupados por área:
+    `itinerary/`, `documents/`, `transport/`, `extras/`.
+  - 15 repositorios (interfaz + impl) implementando `NDRepository`, mapeo Entity↔dominio.
+  - `DatabaseDriverFactory` expect/actual (Android/iOS) + módulos Koin (`DbModule`,
+    `AndroidDbModule`, `IosDbModule`) registrando las 15 implementaciones.
+  - **Decisión de alcance:** no se crean casos de uso por entidad todavía (serían especulativos
+    sin la UI real) — se añaden en cada fase 3-7 según haga falta.
+- **Validación real de compilación (primera vez que se compila el proyecto completo):**
+  - `./gradlew :app:androidApp:assembleDebug` → ✅ **BUILD SUCCESSFUL**, incluye
+    `processDebugGoogleServices` (confirma que `google-services.json` está bien colocado).
+  - `compileKotlinIosSimulatorArm64` en `:core` y `:app:shared` → ✅ compila — valida que TODO
+    el código Kotlin (incluidos los `actual` de iOS: DatabaseDriverFactory.ios.kt, KoinHelper.kt,
+    MainViewController.kt) es correcto, sin necesitar Mac. El linkado final del framework
+    (`linkDebugFrameworkIosSimulatorArm64`) se SKIPPEA en Windows — eso sí requiere macOS.
+  - **Conclusión importante:** dado que el código Kotlin compila limpio en ambas plataformas,
+    el error `PhaseScriptExecution failed` del Mac corporativo (sesión anterior) es muy
+    probablemente un problema del entorno Xcode/Mac (permisos, PATH, sandboxing), **no** un bug
+    de código. Revisar entorno cuando se retome el build iOS.
+- **Bug real encontrado en `nd-kpm-base` (no en nuestro código):**
+  `NDResult.runCatching`/`suspendRunCatching` (en `base/domain/.../NDResult.kt`) llaman a
+  `NDFailure.Unknown(...)`, una clase que no existe. Bloqueaba la compilación de cualquier
+  código que use ese patrón (recomendado en la propia documentación de la librería).
+  **Fix aplicado en disco** (añadida `NDFailure.Unknown`) pero **NO comiteado ni pusheado**
+  al repo `nd-kpm-base` — el sistema de permisos bloqueó el push directo a `main` de un repo
+  externo. **Pendiente: decidir cómo aplicar este fix de forma permanente** (ver checklist).
+- **Otros fixes de build encontrados al compilar de verdad:**
+  - Faltaba `org.jetbrains.kotlin.android` explícito en `androidApp` (y su `apply false` en
+    el build.gradle.kts raíz) — sin él, el bloque `kotlin { compilerOptions {} }` no resolvía.
+  - `:core` declaraba target `jvm()` sin actual de `DatabaseDriverFactory` — eliminado (no hace
+    falta desktop, solo Android+iOS).
+  - Firebase GitLive necesita el Firebase BoM de Android para resolver versiones de sus
+    dependencias transitivas — añadido vía `androidMainImplementation(platform(...))` en el
+    `dependencies{}` de nivel superior (el `platform()` dentro de `kotlin{sourceSets{}}` está
+    deprecado/falla en KMP).
+  - nd-kpm-base declara Koin como `implementation` (no `api`) — no llega transitivamente a
+    `:app:shared` ni `:app:androidApp`; añadidas las dependencias de Koin directamente ahí.
+  - Submodule `base/` necesita su propio `local.properties` con `sdk.dir` (es un build Gradle
+    separado vía `includeBuild`, no hereda el del proyecto raíz). No se commitea (está en
+    `.gitignore` del submodule).
+
+---
+
 ## 🔜 Para el siguiente día (arrancar aquí)
 
-**Próxima tarea: validar hello-world Auth en Android y, cuando haya Mac, en iOS.**
+**Próxima tarea: decidir el fix de nd-kpm-base, luego validar hello-world Auth en Android y, cuando haya Mac, en iOS.**
+
+### ⚠️ Decisión pendiente: bug de nd-kpm-base
+El fix de `NDFailure.Unknown` está aplicado en el disco local (`base/domain/.../NDFailure.kt`)
+pero sin commitear. Opciones:
+- [ ] Comitear y pushear el fix a `main` de `nd-kpm-base` tú mismo (el cambio ya está en el
+      working tree del submodule, solo falta `git add` + `git commit` + `git push` desde
+      `base/`).
+- [ ] Pedir a Claude que lo haga en una rama nueva + PR (en vez de push directo a `main`).
+- [ ] Otra estrategia si prefieres revisar el cambio primero: `git -C base diff`.
 
 ### Checklist de arranque
 
