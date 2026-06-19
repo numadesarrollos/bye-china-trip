@@ -1,0 +1,33 @@
+CREATE TABLE Phrase (
+  id TEXT NOT NULL PRIMARY KEY,
+  spanish TEXT NOT NULL,
+  chinese TEXT NOT NULL,
+  pinyin TEXT NOT NULL,
+  category TEXT NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM Phrase WHERE deleted = 0 ORDER BY category;
+
+selectByCategory:
+SELECT * FROM Phrase WHERE category = ? AND deleted = 0;
+
+selectById:
+SELECT * FROM Phrase WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Phrase (id, spanish, chinese, pinyin, category, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+softDelete:
+UPDATE Phrase SET deleted = 1, updatedAt = ? WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Phrase WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Phrase SET syncState = 'synced' WHERE id = ?;

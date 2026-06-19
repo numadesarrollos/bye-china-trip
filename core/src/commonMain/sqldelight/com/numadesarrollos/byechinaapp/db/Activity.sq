@@ -1,0 +1,40 @@
+CREATE TABLE Activity (
+  id TEXT NOT NULL PRIMARY KEY,
+  dayId TEXT NOT NULL,
+  title TEXT NOT NULL,
+  time TEXT,
+  isCompleted INTEGER NOT NULL DEFAULT 0,
+  notes TEXT,
+  orderIndex INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (dayId) REFERENCES Day(id)
+);
+
+selectByDay:
+SELECT * FROM Activity WHERE dayId = ? AND deleted = 0 ORDER BY orderIndex;
+
+selectById:
+SELECT * FROM Activity WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Activity (id, dayId, title, time, isCompleted, notes, orderIndex, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Activity SET title = ?, time = ?, notes = ?, orderIndex = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+setCompleted:
+UPDATE Activity SET isCompleted = ?, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+softDelete:
+UPDATE Activity SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Activity WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Activity SET syncState = 'synced' WHERE id = ?;

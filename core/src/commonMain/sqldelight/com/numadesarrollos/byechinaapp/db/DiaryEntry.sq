@@ -1,0 +1,40 @@
+CREATE TABLE DiaryEntry (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  dayId TEXT,
+  text TEXT,
+  photoLocalPaths TEXT,
+  date TEXT NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id),
+  FOREIGN KEY (dayId) REFERENCES Day(id)
+);
+
+selectByTrip:
+SELECT * FROM DiaryEntry WHERE tripId = ? AND deleted = 0 ORDER BY date DESC;
+
+selectByDay:
+SELECT * FROM DiaryEntry WHERE dayId = ? AND deleted = 0;
+
+selectById:
+SELECT * FROM DiaryEntry WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO DiaryEntry (id, tripId, dayId, text, photoLocalPaths, date, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE DiaryEntry SET text = ?, photoLocalPaths = ?, date = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE DiaryEntry SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM DiaryEntry WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE DiaryEntry SET syncState = 'synced' WHERE id = ?;

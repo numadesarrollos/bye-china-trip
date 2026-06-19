@@ -1,0 +1,27 @@
+CREATE TABLE CurrencyRate (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  eurToCny REAL NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id)
+);
+
+selectByTrip:
+SELECT * FROM CurrencyRate WHERE tripId = ? AND deleted = 0 LIMIT 1;
+
+insert:
+INSERT INTO CurrencyRate (id, tripId, eurToCny, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE CurrencyRate SET eurToCny = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM CurrencyRate WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE CurrencyRate SET syncState = 'synced' WHERE id = ?;

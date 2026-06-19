@@ -1,0 +1,33 @@
+CREATE TABLE Trip (
+  id TEXT NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  startDate TEXT NOT NULL,
+  endDate TEXT NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM Trip WHERE deleted = 0;
+
+selectById:
+SELECT * FROM Trip WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Trip (id, name, startDate, endDate, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Trip SET name = ?, startDate = ?, endDate = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Trip SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Trip WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Trip SET syncState = 'synced' WHERE id = ?;

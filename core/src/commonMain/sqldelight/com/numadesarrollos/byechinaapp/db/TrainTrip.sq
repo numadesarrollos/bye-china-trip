@@ -1,0 +1,41 @@
+CREATE TABLE TrainTrip (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  trainNumber TEXT NOT NULL,
+  departureStation TEXT NOT NULL,
+  arrivalStation TEXT NOT NULL,
+  departureDateTime TEXT NOT NULL,
+  arrivalDateTime TEXT NOT NULL,
+  seat TEXT,
+  priceAmount REAL,
+  priceCurrency TEXT,
+  notes TEXT,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id)
+);
+
+selectByTrip:
+SELECT * FROM TrainTrip WHERE tripId = ? AND deleted = 0 ORDER BY departureDateTime;
+
+selectById:
+SELECT * FROM TrainTrip WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO TrainTrip (id, tripId, trainNumber, departureStation, arrivalStation, departureDateTime, arrivalDateTime, seat, priceAmount, priceCurrency, notes, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE TrainTrip SET trainNumber = ?, departureStation = ?, arrivalStation = ?, departureDateTime = ?, arrivalDateTime = ?, seat = ?, priceAmount = ?, priceCurrency = ?, notes = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE TrainTrip SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM TrainTrip WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE TrainTrip SET syncState = 'synced' WHERE id = ?;

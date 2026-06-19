@@ -1,0 +1,42 @@
+CREATE TABLE Flight (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  airline TEXT NOT NULL,
+  flightNumber TEXT NOT NULL,
+  departureAirport TEXT NOT NULL,
+  arrivalAirport TEXT NOT NULL,
+  departureDateTime TEXT NOT NULL,
+  arrivalDateTime TEXT NOT NULL,
+  seat TEXT,
+  priceAmount REAL,
+  priceCurrency TEXT,
+  notes TEXT,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id)
+);
+
+selectByTrip:
+SELECT * FROM Flight WHERE tripId = ? AND deleted = 0 ORDER BY departureDateTime;
+
+selectById:
+SELECT * FROM Flight WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Flight (id, tripId, airline, flightNumber, departureAirport, arrivalAirport, departureDateTime, arrivalDateTime, seat, priceAmount, priceCurrency, notes, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Flight SET airline = ?, flightNumber = ?, departureAirport = ?, arrivalAirport = ?, departureDateTime = ?, arrivalDateTime = ?, seat = ?, priceAmount = ?, priceCurrency = ?, notes = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Flight SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Flight WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Flight SET syncState = 'synced' WHERE id = ?;

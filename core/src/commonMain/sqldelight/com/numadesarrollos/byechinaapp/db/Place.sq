@@ -1,0 +1,34 @@
+CREATE TABLE Place (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  orderIndex INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id)
+);
+
+selectByTrip:
+SELECT * FROM Place WHERE tripId = ? AND deleted = 0 ORDER BY orderIndex;
+
+selectById:
+SELECT * FROM Place WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Place (id, tripId, name, orderIndex, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Place SET name = ?, orderIndex = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Place SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Place WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Place SET syncState = 'synced' WHERE id = ?;

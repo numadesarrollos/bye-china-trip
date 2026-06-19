@@ -1,0 +1,57 @@
+CREATE TABLE Document (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  localPath TEXT NOT NULL,
+  remoteUrl TEXT,
+  mimeType TEXT NOT NULL,
+  placeId TEXT,
+  dayId TEXT,
+  activityId TEXT,
+  flightId TEXT,
+  trainTripId TEXT,
+  accommodationId TEXT,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id)
+);
+
+selectByTrip:
+SELECT * FROM Document WHERE tripId = ? AND deleted = 0;
+
+selectByDay:
+SELECT * FROM Document WHERE dayId = ? AND deleted = 0;
+
+selectByActivity:
+SELECT * FROM Document WHERE activityId = ? AND deleted = 0;
+
+selectByFlight:
+SELECT * FROM Document WHERE flightId = ? AND deleted = 0;
+
+selectByTrainTrip:
+SELECT * FROM Document WHERE trainTripId = ? AND deleted = 0;
+
+selectByAccommodation:
+SELECT * FROM Document WHERE accommodationId = ? AND deleted = 0;
+
+selectById:
+SELECT * FROM Document WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Document (id, tripId, name, localPath, remoteUrl, mimeType, placeId, dayId, activityId, flightId, trainTripId, accommodationId, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Document SET name = ?, localPath = ?, remoteUrl = ?, mimeType = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Document SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Document WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Document SET syncState = 'synced', remoteUrl = ? WHERE id = ?;

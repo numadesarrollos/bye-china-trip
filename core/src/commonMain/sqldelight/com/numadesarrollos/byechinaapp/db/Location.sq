@@ -1,0 +1,38 @@
+CREATE TABLE Location (
+  id TEXT NOT NULL PRIMARY KEY,
+  dayId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  address TEXT,
+  latitude REAL,
+  longitude REAL,
+  notes TEXT,
+  orderIndex INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (dayId) REFERENCES Day(id)
+);
+
+selectByDay:
+SELECT * FROM Location WHERE dayId = ? AND deleted = 0 ORDER BY orderIndex;
+
+selectById:
+SELECT * FROM Location WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Location (id, dayId, name, address, latitude, longitude, notes, orderIndex, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Location SET name = ?, address = ?, latitude = ?, longitude = ?, notes = ?, orderIndex = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Location SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Location WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Location SET syncState = 'synced' WHERE id = ?;

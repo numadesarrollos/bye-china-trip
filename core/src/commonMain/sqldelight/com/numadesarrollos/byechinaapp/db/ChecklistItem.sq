@@ -1,0 +1,39 @@
+CREATE TABLE ChecklistItem (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  title TEXT NOT NULL,
+  isCompleted INTEGER NOT NULL DEFAULT 0,
+  category TEXT,
+  orderIndex INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id)
+);
+
+selectByTrip:
+SELECT * FROM ChecklistItem WHERE tripId = ? AND deleted = 0 ORDER BY orderIndex;
+
+selectById:
+SELECT * FROM ChecklistItem WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO ChecklistItem (id, tripId, title, isCompleted, category, orderIndex, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE ChecklistItem SET title = ?, category = ?, orderIndex = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+setCompleted:
+UPDATE ChecklistItem SET isCompleted = ?, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+softDelete:
+UPDATE ChecklistItem SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM ChecklistItem WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE ChecklistItem SET syncState = 'synced' WHERE id = ?;

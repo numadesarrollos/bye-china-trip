@@ -1,0 +1,43 @@
+CREATE TABLE Accommodation (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  placeId TEXT,
+  name TEXT NOT NULL,
+  address TEXT,
+  checkInDate TEXT NOT NULL,
+  checkOutDate TEXT NOT NULL,
+  confirmationCode TEXT,
+  notes TEXT,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id),
+  FOREIGN KEY (placeId) REFERENCES Place(id)
+);
+
+selectByTrip:
+SELECT * FROM Accommodation WHERE tripId = ? AND deleted = 0 ORDER BY checkInDate;
+
+selectByPlace:
+SELECT * FROM Accommodation WHERE placeId = ? AND deleted = 0 ORDER BY checkInDate;
+
+selectById:
+SELECT * FROM Accommodation WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Accommodation (id, tripId, placeId, name, address, checkInDate, checkOutDate, confirmationCode, notes, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Accommodation SET placeId = ?, name = ?, address = ?, checkInDate = ?, checkOutDate = ?, confirmationCode = ?, notes = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Accommodation SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Accommodation WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Accommodation SET syncState = 'synced' WHERE id = ?;

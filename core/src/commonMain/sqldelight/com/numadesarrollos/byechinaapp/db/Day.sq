@@ -1,0 +1,38 @@
+CREATE TABLE Day (
+  id TEXT NOT NULL PRIMARY KEY,
+  placeId TEXT NOT NULL,
+  date TEXT NOT NULL,
+  isSpecial INTEGER NOT NULL DEFAULT 0,
+  notes TEXT,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (placeId) REFERENCES Place(id)
+);
+
+selectByPlace:
+SELECT * FROM Day WHERE placeId = ? AND deleted = 0 ORDER BY date;
+
+selectByDate:
+SELECT * FROM Day WHERE date = ? AND deleted = 0;
+
+selectById:
+SELECT * FROM Day WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Day (id, placeId, date, isSpecial, notes, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Day SET date = ?, isSpecial = ?, notes = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Day SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Day WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Day SET syncState = 'synced' WHERE id = ?;

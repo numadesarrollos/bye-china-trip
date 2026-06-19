@@ -1,0 +1,40 @@
+CREATE TABLE Expense (
+  id TEXT NOT NULL PRIMARY KEY,
+  tripId TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT NOT NULL,
+  amount REAL NOT NULL,
+  currency TEXT NOT NULL,
+  date TEXT NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0,
+  syncState TEXT NOT NULL DEFAULT 'pendingUpload',
+  createdBy TEXT NOT NULL,
+  FOREIGN KEY (tripId) REFERENCES Trip(id)
+);
+
+selectByTrip:
+SELECT * FROM Expense WHERE tripId = ? AND deleted = 0 ORDER BY date DESC;
+
+selectByTripAndCategory:
+SELECT * FROM Expense WHERE tripId = ? AND category = ? AND deleted = 0 ORDER BY date DESC;
+
+selectById:
+SELECT * FROM Expense WHERE id = ? AND deleted = 0;
+
+insert:
+INSERT INTO Expense (id, tripId, category, description, amount, currency, date, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Expense SET category = ?, description = ?, amount = ?, currency = ?, date = ?, updatedAt = ?, syncState = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Expense SET deleted = 1, updatedAt = ?, syncState = 'pendingUpload' WHERE id = ?;
+
+selectPendingUpload:
+SELECT * FROM Expense WHERE syncState = 'pendingUpload';
+
+markSynced:
+UPDATE Expense SET syncState = 'synced' WHERE id = ?;
