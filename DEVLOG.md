@@ -102,16 +102,16 @@
 **iOS — requiere Mac:**
 - [x] Colocar `GoogleService-Info.plist` en `app/iosApp/iosApp/` ✅
 - [x] Abrir `app/iosApp/iosApp.xcodeproj` en Xcode ✅
-- [x] File → Add Package Dependencies → `firebase-ios-sdk` → `FirebaseAuth` añadido ✅
-- [ ] **⚠️ BLOQUEADO — aparcado a propósito, retomar cuando haya hueco:**
-  Al compilar en Xcode falla con `Command PhaseScriptExecution failed with a nonzero exit code`.
-  Es solo el resumen del error — el real está dentro del script "Compile Kotlin Framework"
-  (`./gradlew :app:shared:embedAndSignAppleFrameworkForXcode`).
-  **Siguiente paso:** en Xcode → Report Navigator (Cmd+9) → build fallido → expandir la línea roja
-  de PhaseScriptExecution → copiar el log completo para diagnosticar la causa real.
+- [x] File → Add Package Dependencies → `firebase-ios-sdk` → `FirebaseAuth` añadido ✅ (commit `3f2c378`)
+- [ ] **⚠️ BLOQUEADO — el Mac usado es corporativo (Grupo Santander) con restricciones que impiden compilar.**
+  Error: `Command PhaseScriptExecution failed with a nonzero exit code` en el script
+  "Compile Kotlin Framework" (`./gradlew :app:shared:embedAndSignAppleFrameworkForXcode`).
+  No es un bug de código — son restricciones del equipo corporativo. **Decisión del usuario:**
+  seguir con el resto del desarrollo (Fase 2+) en paralelo y retomar el build iOS cuando encuentre
+  otra forma de probar (Mac personal u otra vía). No dar por resuelto hasta confirmación expresa.
 - [ ] Compilar en simulador iOS → probar login ✅
 
-**Cuando ambas plataformas funcionen → Fase 1 cerrada → arrancar Fase 2**
+**Mientras el build iOS está bloqueado: avanzar con Fase 2 (no depende de Mac). Cerrar Fase 1 del todo cuando se pueda probar iOS.**
 
 ### Fuentes custom (puede hacerse en cualquier momento, no bloquea nada)
 Descargar TTF de Google Fonts y colocar en `app/shared/src/commonMain/composeResources/font/`:
