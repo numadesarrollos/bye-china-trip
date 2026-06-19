@@ -136,16 +136,13 @@
 
 ## 🔜 Para el siguiente día (arrancar aquí)
 
-**Próxima tarea: decidir el fix de nd-kpm-base, luego validar hello-world Auth en Android y, cuando haya Mac, en iOS.**
+**Próxima tarea: validar hello-world Auth en Android y, cuando haya Mac, en iOS.**
 
-### ⚠️ Decisión pendiente: bug de nd-kpm-base
-El fix de `NDFailure.Unknown` está aplicado en el disco local (`base/domain/.../NDFailure.kt`)
-pero sin commitear. Opciones:
-- [ ] Comitear y pushear el fix a `main` de `nd-kpm-base` tú mismo (el cambio ya está en el
-      working tree del submodule, solo falta `git add` + `git commit` + `git push` desde
-      `base/`).
-- [ ] Pedir a Claude que lo haga en una rama nueva + PR (en vez de push directo a `main`).
-- [ ] Otra estrategia si prefieres revisar el cambio primero: `git -C base diff`.
+### ✅ Resuelto: bug de nd-kpm-base
+Fix de `NDFailure.Unknown` comiteado y pusheado a `main` de `nd-kpm-base` (commit `3a4590c`,
+autorizado explícitamente por el usuario). Puntero del submodule actualizado en este repo
+(commit `10e8084`). Si se clona el proyecto en otra máquina, `git submodule update --remote base`
+(o un clone con `--recurse-submodules`) ya trae el fix.
 
 ### Checklist de arranque
 
