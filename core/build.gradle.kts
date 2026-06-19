@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -14,8 +15,6 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
-
-    jvm()
 
     androidLibrary {
         namespace = "com.numadesarrollos.byechinaapp.core"
@@ -55,4 +54,16 @@ kotlin {
             implementation(libs.sqldelight.native.driver)
         }
     }
+}
+
+sqldelight {
+    databases {
+        create("AppDatabase") {
+            packageName.set("com.numadesarrollos.byechinaapp.db")
+        }
+    }
+}
+
+dependencies {
+    androidMainImplementation(platform(libs.firebase.bom))
 }

@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("com.google.gms.google-services") version "4.4.2"
@@ -16,6 +17,10 @@ dependencies {
     implementation(projects.app.shared)
 
     implementation(libs.androidx.activity.compose)
+
+    // DI — needed directly for ByEChinaApplication (startKoin/androidContext)
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)

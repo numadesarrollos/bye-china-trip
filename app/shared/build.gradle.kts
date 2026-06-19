@@ -43,6 +43,11 @@ kotlin {
             // nd-kpm-base: presentation layer (NDViewModel, NDScreen, Koin Compose)
             api("com.numadesarrollos.base:presentation:1.0.0")
 
+            // DI — nd-kpm-base declares these as `implementation`, so not exposed transitively
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
             // Compose
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
