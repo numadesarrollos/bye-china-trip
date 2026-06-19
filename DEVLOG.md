@@ -101,8 +101,14 @@
 
 **iOS — requiere Mac:**
 - [x] Colocar `GoogleService-Info.plist` en `app/iosApp/iosApp/` ✅
-- [ ] Abrir `app/iosApp/iosApp.xcodeproj` en Xcode
-- [ ] File → Add Package Dependencies → `https://github.com/firebase/firebase-ios-sdk` → seleccionar `FirebaseAuth` → Add to target `iosApp`
+- [x] Abrir `app/iosApp/iosApp.xcodeproj` en Xcode ✅
+- [x] File → Add Package Dependencies → `firebase-ios-sdk` → `FirebaseAuth` añadido ✅
+- [ ] **⚠️ BLOQUEADO — aparcado a propósito, retomar cuando haya hueco:**
+  Al compilar en Xcode falla con `Command PhaseScriptExecution failed with a nonzero exit code`.
+  Es solo el resumen del error — el real está dentro del script "Compile Kotlin Framework"
+  (`./gradlew :app:shared:embedAndSignAppleFrameworkForXcode`).
+  **Siguiente paso:** en Xcode → Report Navigator (Cmd+9) → build fallido → expandir la línea roja
+  de PhaseScriptExecution → copiar el log completo para diagnosticar la causa real.
 - [ ] Compilar en simulador iOS → probar login ✅
 
 **Cuando ambas plataformas funcionen → Fase 1 cerrada → arrancar Fase 2**
