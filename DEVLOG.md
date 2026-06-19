@@ -16,7 +16,7 @@
 | Fase | Descripción | Estado |
 |------|-------------|--------|
 | 0 | Ampliar mockup y cerrar diseño | ✅ Completada |
-| 1 | Setup KMP + Firebase + tema | 🔧 En progreso (Android validado; iOS bloqueado por Mac corporativo) |
+| 1 | Setup KMP + Firebase + tema | 🔧 En progreso (Auth Android validado end-to-end; iOS bloqueado por Mac corporativo) |
 | 2 | Datos + dominio (SQLDelight) | 🔧 En progreso (esquema+repos hechos; casos de uso se añaden por fase) |
 | 3 | Itinerario (Trip + Lugares + Días) | ⬜ Pendiente |
 | 4 | Ubicaciones y actividades por día | ⬜ Pendiente |
@@ -131,12 +131,24 @@
   - Submodule `base/` necesita su propio `local.properties` con `sdk.dir` (es un build Gradle
     separado vía `includeBuild`, no hereda el del proyecto raíz). No se commitea (está en
     `.gitignore` del submodule).
+- **Fix de nd-kpm-base resuelto:** commit y push autorizados explícitamente por el usuario a
+  `main` (commit `3a4590c`); puntero del submodule actualizado en este repo (`10e8084`).
+- **✅ Hello-world Firebase Auth en Android validado de verdad** (no solo compila — se ejecutó):
+  - Arrancado emulador `Medium_Phone_API_36.1`, instalada la app (`installDebug`) y lanzada.
+  - `LoginScreen` se renderiza correctamente con el tema (Cinnabar, Fraunces/Inter fallback,
+    🐻🐰, botón "Entrar" deshabilitado hasta rellenar campos).
+  - Login real contra Firebase con `numadesarrollos@gmail.com` → logcat confirma:
+    `FirebaseAuth: Logging in as numadesarrollos@gmail.com` seguido de
+    `Notifying id token listeners about user (e2lgsI40ITQsmUh8EidcVCXWRmo1)` → **login exitoso**,
+    sin crash, sin error en el snackbar.
+  - **Conclusión:** el "mayor riesgo técnico" de la Fase 1 (GitLive Firebase Auth) está validado
+    en Android. Solo falta repetir la prueba en iOS cuando se resuelva el bloqueo del Mac corporativo.
 
 ---
 
 ## 🔜 Para el siguiente día (arrancar aquí)
 
-**Próxima tarea: validar hello-world Auth en Android y, cuando haya Mac, en iOS.**
+**Próxima tarea: cuando haya Mac, repetir la validación de Auth en iOS. Mientras, se puede avanzar con Fase 3.**
 
 ### ✅ Resuelto: bug de nd-kpm-base
 Fix de `NDFailure.Unknown` comiteado y pusheado a `main` de `nd-kpm-base` (commit `3a4590c`,
@@ -144,14 +156,16 @@ autorizado explícitamente por el usuario). Puntero del submodule actualizado en
 (commit `10e8084`). Si se clona el proyecto en otra máquina, `git submodule update --remote base`
 (o un clone con `--recurse-submodules`) ya trae el fix.
 
-### Checklist de arranque
+### ✅ Resuelto: hello-world Firebase Auth en Android
+Probado de verdad en emulador (`Medium_Phone_API_36.1`): login con `numadesarrollos@gmail.com`
+exitoso, confirmado por logcat (`Notifying id token listeners about user`). No hace falta repetir
+esta prueba salvo que se cambien las dependencias de Firebase/Auth.
 
-**Android — se puede hacer ahora:**
+**Android — checklist completado:**
 - [x] Colocar `google-services.json` en `app/androidApp/` ✅
-- [ ] Sync Gradle en Android Studio
-- [ ] Ejecutar en dispositivo/emulador Android — debe abrir LoginScreen
-- [ ] Crear usuario de prueba en Firebase (Auth → Users → Add user)
-- [ ] Probar login con ese usuario → si navega (sin crash) la Auth funciona ✅
+- [x] Compilar e instalar en emulador Android ✅
+- [x] Usuario de prueba creado en Firebase ✅
+- [x] Login probado con éxito (ver logcat arriba) ✅
 
 **iOS — requiere Mac:**
 - [x] Colocar `GoogleService-Info.plist` en `app/iosApp/iosApp/` ✅
