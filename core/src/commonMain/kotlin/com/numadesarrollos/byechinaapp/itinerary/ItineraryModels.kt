@@ -31,6 +31,7 @@ data class Day(
     val id: String,
     val placeId: String,
     val date: LocalDate,
+    val title: String?,
     val isSpecial: Boolean,
     val notes: String?,
     val updatedAt: Long,
@@ -66,4 +67,17 @@ data class Activity(
     val deleted: Boolean,
     val syncState: SyncState,
     val createdBy: Owner,
+)
+
+// ── Composite models for screens that need joined data ────────────────────────
+
+data class PlaceWithDays(
+    val place: Place,
+    val days: List<Day>,
+)
+
+data class DayDetail(
+    val day: Day,
+    val activities: List<Activity>,
+    val locations: List<Location>,
 )

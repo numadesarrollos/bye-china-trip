@@ -2,6 +2,7 @@ CREATE TABLE Day (
   id TEXT NOT NULL PRIMARY KEY,
   placeId TEXT NOT NULL,
   date TEXT NOT NULL,
+  title TEXT,
   isSpecial INTEGER NOT NULL DEFAULT 0,
   notes TEXT,
   updatedAt INTEGER NOT NULL,
@@ -21,11 +22,11 @@ selectById:
 SELECT * FROM Day WHERE id = ? AND deleted = 0;
 
 insert:
-INSERT INTO Day (id, placeId, date, isSpecial, notes, updatedAt, deleted, syncState, createdBy)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Day (id, placeId, date, title, isSpecial, notes, updatedAt, deleted, syncState, createdBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 update:
-UPDATE Day SET date = ?, isSpecial = ?, notes = ?, updatedAt = ?, syncState = ?
+UPDATE Day SET date = ?, title = ?, isSpecial = ?, notes = ?, updatedAt = ?, syncState = ?
 WHERE id = ?;
 
 softDelete:

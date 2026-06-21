@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.numadesarrollos.byechinaapp.auth.LoginScreen
+import com.numadesarrollos.byechinaapp.auth.AuthRepository
+import com.numadesarrollos.byechinaapp.nav.AppNavGraph
 import com.numadesarrollos.byechinaapp.ui.theme.AppTheme
+import org.koin.compose.koinInject
 
 @Composable
 fun App() {
@@ -15,11 +18,9 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
-            // Phase 1: Login screen (Firebase Auth hello-world)
-            // Phase 3: replace with NavHost and full navigation
-            LoginScreen(
-                onLoginSuccess = { /* TODO Phase 3: navigate to home */ },
-            )
+            val authRepository = koinInject<AuthRepository>()
+            val startLoggedIn = remember { authRepository.isSignedIn() }
+            AppNavGraph(startLoggedIn = startLoggedIn)
         }
     }
 }

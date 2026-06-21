@@ -48,6 +48,9 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
+            // Dates — used directly in ViewModels/forms (date parsing, day counters)
+            implementation(libs.kotlinx.datetime)
+
             // Compose
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -62,6 +65,9 @@ kotlin {
 
             // Image loading
             implementation(libs.coil.compose)
+
+            // Navigation
+            implementation(libs.navigation.compose)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)

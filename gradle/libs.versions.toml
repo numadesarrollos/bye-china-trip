@@ -39,7 +39,7 @@ coil                    = "3.0.4"
 
 # ── Navigation ────────────────────────────────────────────────────────────────
 # Oficial CMP navigation — used in Phase 3
-androidx-navigation     = "2.9.0-alpha11"
+androidx-navigation     = "2.9.2"
 
 [libraries]
 # AndroidX

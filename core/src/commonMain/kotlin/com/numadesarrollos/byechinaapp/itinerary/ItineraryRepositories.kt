@@ -172,6 +172,7 @@ class DayRepositoryImpl(
             id = day.id,
             placeId = day.placeId,
             date = day.date.toString(),
+            title = day.title,
             isSpecial = day.isSpecial.toLong(),
             notes = day.notes,
             updatedAt = day.updatedAt,
@@ -184,6 +185,7 @@ class DayRepositoryImpl(
     override suspend fun update(day: Day) = withContext(dispatcherProvider.io) {
         db.dayQueries.update(
             date = day.date.toString(),
+            title = day.title,
             isSpecial = day.isSpecial.toLong(),
             notes = day.notes,
             updatedAt = day.updatedAt,
@@ -200,6 +202,7 @@ class DayRepositoryImpl(
         id = id,
         placeId = placeId,
         date = LocalDate.parse(date),
+        title = title,
         isSpecial = isSpecial.toBoolean(),
         notes = notes,
         updatedAt = updatedAt,
