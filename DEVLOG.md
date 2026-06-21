@@ -18,8 +18,8 @@
 | 0 | Ampliar mockup y cerrar diseño | ✅ Completada |
 | 1 | Setup KMP + Firebase + tema | 🔧 En progreso (Auth Android validado end-to-end; iOS bloqueado por Mac corporativo) |
 | 2 | Datos + dominio (SQLDelight) | 🔧 En progreso (esquema+repos hechos; casos de uso se añaden por fase) |
-| 3 | Itinerario (Trip + Lugares + Días) | 🔧 Código completo y compila — pendiente de prueba interactiva por el usuario |
-| 4 | Ubicaciones y actividades por día | ⬜ Pendiente |
+| 3 | Itinerario (Trip + Lugares + Días) | ✅ Completada — probada a mano por el usuario en emulador |
+| 4 | Ubicaciones y actividades por día | ⏳ Siguiente |
 | 5 | Documentos (picker + visor offline) | ⬜ Pendiente |
 | 6 | Vuelos y Trenes (billete offline) | ⬜ Pendiente |
 | 7 | Extras (gastos, conversor, preparativos, alojamientos, diario, recordatorios, frases, emergencias) | ⬜ Pendiente |
@@ -190,19 +190,38 @@
 
 ## 🔜 Para el siguiente día (arrancar aquí)
 
-**Próxima tarea: el usuario prueba a mano el flujo de Fase 3 (crear viaje → ciudad → día → detalle)
-en el emulador y dice qué falla, si algo falla. Cuando haya Mac, repetir la validación de Auth en iOS.**
+**Próxima tarea: Fase 4 — Ubicaciones y actividades por día.**
 
-### 🔧 Por probar manualmente (Fase 3)
-1. Hoy (vacío) → botón "Crear viaje" → formulario → guardar.
-2. Vuelve a Hoy → debería mostrar el progreso del viaje (antes/durante/después según la fecha).
-3. Pestaña Itinerario → "+" arriba → añadir ciudad → guardar.
-4. Dentro de la ciudad (se expande sola) → "+ Añadir día" → guardar.
-5. Tocar el día → Detalle de día (cabecera dorada si se marcó "fecha especial").
-6. Volver atrás con "←" en cada formulario y comprobar que no se pierden datos raros.
+### ✅ Resuelto: Fase 3 probada por el usuario
+El usuario probó a mano en el emulador el flujo completo (crear viaje → añadir ciudad →
+añadir día → ver detalle de día) y confirmó que **funciona correctamente**. Fase 3 cerrada.
 
-Si algo de esto crashea o se ve mal, decir exactamente en qué paso para poder reproducirlo
-sin necesidad de que Claude toque el emulador a ciegas.
+**Nota de proceso:** no conducir flujos de UI de varios pasos a ciegas con `adb shell input
+tap/text` — el teclado en pantalla desplaza el layout y los taps calculados sobre una captura
+antigua caen en el sitio equivocado. Validar build/instalación/arranque (compilar, instalar,
+lanzar, una captura, logcat de errores) está bien; recorrer formularios tap a tap no — eso lo
+prueba el usuario. Ver memoria `feedback-desarrollo` para el detalle.
+
+### Fase 4 — Ubicaciones y actividades por día (arrancar aquí)
+**Alcance según el plan:** "CRUD por día, hora, estado 'completada', reordenación." En Fase 3
+las listas de actividades/ubicaciones dentro de Detalle de día son de **solo lectura** a
+propósito — esta fase les da CRUD completo.
+
+Lo que ya existe y se puede reutilizar (Fase 2/3):
+- Esquema SQLDelight de `Activity` y `Location` ya completo (`Activity.sq`, `Location.sq`).
+- `ActivityRepository` / `LocationRepository` ya implementados (`ItineraryRepositories.kt`).
+- `DayDetailScreen` ya muestra ambas listas — falta añadir edición/creación/reordenación/toggle.
+- Patrón a seguir: mismo que Trip/Place/Day — Use Cases en `:core/itinerary/`, Contract +
+  ViewModel + Screen en `:app:shared/itinerary/`, formularios con `OwnerSelector` reutilizable.
+- `ActivityRepository.setCompleted(id, isCompleted, updatedAt)` ya existe en el repo — falta
+  el caso de uso y el wiring de UI (checkbox en la fila de actividad).
+
+Checklist sugerido:
+- [ ] `CreateActivityUseCase`, `CreateLocationUseCase`, `ToggleActivityCompletedUseCase`
+- [ ] Reordenación: decidir mecanismo (drag&drop vs botones subir/bajar) antes de implementar
+- [ ] Formularios ActivityForm / LocationForm (mismo patrón que DayForm)
+- [ ] Actualizar `DayDetailScreen` para mostrar checkbox + botones editar/borrar
+- [ ] Validar build (Android + iOS) y dejar que el usuario pruebe el flujo a mano
 
 ### ✅ Resuelto: bug de nd-kpm-base
 Fix de `NDFailure.Unknown` comiteado y pusheado a `main` de `nd-kpm-base` (commit `3a4590c`,
