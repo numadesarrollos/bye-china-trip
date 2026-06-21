@@ -18,7 +18,7 @@
 | 0 | Ampliar mockup y cerrar diseño | ✅ Completada |
 | 1 | Setup KMP + Firebase + tema | 🔧 En progreso (Auth Android validado end-to-end; iOS bloqueado por Mac corporativo) |
 | 2 | Datos + dominio (SQLDelight) | 🔧 En progreso (esquema+repos hechos; casos de uso se añaden por fase) |
-| 3 | Itinerario (Trip + Lugares + Días) | ⬜ Pendiente |
+| 3 | Itinerario (Trip + Lugares + Días) | 🔧 Código completo y compila — pendiente de prueba interactiva por el usuario |
 | 4 | Ubicaciones y actividades por día | ⬜ Pendiente |
 | 5 | Documentos (picker + visor offline) | ⬜ Pendiente |
 | 6 | Vuelos y Trenes (billete offline) | ⬜ Pendiente |
@@ -146,9 +146,63 @@
 
 ---
 
+### 2026-06-21 — Fase 3: Itinerario navegable (sesión 4)
+**Hecho:**
+- **Casos de uso (:core/itinerary/ItineraryUseCases.kt):** CreateTrip, GetTrip, CreatePlace,
+  CreateDay, GetToday, GetItinerary (places+days agrupados), GetDayDetail (day+activities+locations).
+- **Utilidades de dominio nuevas:** `IdGenerator` (UUID propio sin API experimental),
+  `ChinaTime` (Asia/Shanghai, sin DST — `today()` y `nowEpochMillis()`).
+- **`Day` ganó el campo `title`** (esquema pre-release, sin coste de migración): el mockup usa un
+  titular propio por día ("Mutianyu, solos al amanecer") distinto de las notas.
+- **Navegación:** `AppNavGraph` con `NavHost` + `Scaffold` con bottom bar condicional (solo en
+  las 5 rutas de pestaña). `App.kt` decide Login vs Hoy según `AuthRepository.isSignedIn()`.
+  Bottom nav: Hoy · Itinerario · Vuelos · Trenes · Más (las 3 últimas con placeholder
+  "Próximamente" reutilizable, `ComingSoonScreen`).
+- **Pantallas:**
+  - **Hoy:** estado vacío con CTA "Crear viaje"; con viaje, progreso calculado a partir de la
+    fecha real (antes/durante/después del viaje vía `TripProgress` sealed interface) —
+    independiente de si existe un `Day` para hoy (bug encontrado y corregido en pruebas).
+  - **Itinerario:** ciudades colapsables (hilo rojo), la ciudad de "hoy" se expande por defecto
+    (backlog de Fase 0 resuelto); formularios para añadir ciudad/día.
+  - **Detalle de día:** cabecera dorada si `isSpecial`, actividades y ubicaciones de solo lectura
+    (su CRUD llega en Fase 4 — decisión de alcance).
+  - Formularios Trip/Place/Day con selector 🐻 Borja / 🐰 Esther (`OwnerSelector` reutilizable).
+- **`OnResume`** (común): recarga datos al volver de un formulario, ya que los destinos de
+  `NavHost` no se destruyen mientras quedan en el back stack.
+- **Validación de build (sin Mac):** compila para Android (`assembleDebug`) y para iOS
+  (`compileKotlinIosSimulatorArm64`, sin linkar — eso requiere macOS real).
+  - Errores reales encontrados y corregidos en el camino: versión de `navigation-compose`
+    inventada (corregida a la `2.9.2` real vía maven-metadata.xml), `kotlinx-datetime` faltaba
+    en `:app:shared`, imports de `getValue` para delegados `by` en Compose, `TopAppBar` necesita
+    `@OptIn(ExperimentalMaterial3Api::class)` en esta versión de Material3, y el paso de argumentos
+    de navegación en KMP usa `androidx.savedstate.read { getStringOrNull(...) }` — **no**
+    `Bundle.getString()` (esa API es solo Android, rompía la compilación iOS).
+- **Probado en emulador:** la app arranca sin crash y el estado vacío de "Hoy" se renderiza
+  correctamente (sesión de Firebase persistida tras limpiar solo el fichero `app.db`).
+  Se encontró un `Trip` de prueba ("Maldivas") en la base de datos del emulador de una sesión
+  anterior — limpiado borrando `app.db` directamente (sin tocar la sesión de Firebase).
+- **Pendiente:** la prueba del flujo interactivo completo (crear viaje → añadir ciudad → añadir
+  día → ver detalle) **la hace el usuario manualmente** — ver feedback en memoria: no conducir
+  flujos de UI a ciegas con `adb` (taps sin verificar cada paso causaron una recarga del proceso
+  de la app y confusión sobre si era un bug real o un mistap).
+
+---
+
 ## 🔜 Para el siguiente día (arrancar aquí)
 
-**Próxima tarea: cuando haya Mac, repetir la validación de Auth en iOS. Mientras, se puede avanzar con Fase 3.**
+**Próxima tarea: el usuario prueba a mano el flujo de Fase 3 (crear viaje → ciudad → día → detalle)
+en el emulador y dice qué falla, si algo falla. Cuando haya Mac, repetir la validación de Auth en iOS.**
+
+### 🔧 Por probar manualmente (Fase 3)
+1. Hoy (vacío) → botón "Crear viaje" → formulario → guardar.
+2. Vuelve a Hoy → debería mostrar el progreso del viaje (antes/durante/después según la fecha).
+3. Pestaña Itinerario → "+" arriba → añadir ciudad → guardar.
+4. Dentro de la ciudad (se expande sola) → "+ Añadir día" → guardar.
+5. Tocar el día → Detalle de día (cabecera dorada si se marcó "fecha especial").
+6. Volver atrás con "←" en cada formulario y comprobar que no se pierden datos raros.
+
+Si algo de esto crashea o se ve mal, decir exactamente en qué paso para poder reproducirlo
+sin necesidad de que Claude toque el emulador a ciegas.
 
 ### ✅ Resuelto: bug de nd-kpm-base
 Fix de `NDFailure.Unknown` comiteado y pusheado a `main` de `nd-kpm-base` (commit `3a4590c`,
